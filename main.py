@@ -1,7 +1,9 @@
 import cv2
 from line_detection import LineFollower
 from motor_cmds import Urkab
-
+from picamera import PiCamera
+from picamera.array import PiRGBArray
+from time import sleep
 
 # Define the motor control function
 def motor_control(command):
@@ -15,29 +17,25 @@ def motor_control(command):
     else:
         motor_controller.carStop()  # Stop if no command
 
-
 if __name__ == '__main__':
     # Initialize motor controller and line follower with motor control function
     motor_controller = Urkab()
     line_follower = LineFollower(motor_control=motor_control)
 
-    # Replace 'input_path' with your video file path
-    input_path = "data/vid1.avi"
-    cap = cv2.VideoCapture(input_path)
-
-    if not cap.isOpened():
-        print(f"Error: Could not open video file: {input_path}")
-        exit()
+    # Initialize the PiCamera
+    camera = PiCamera()
+    camera.resolution = (160, 128)
+    camera.framerate = 32
+    raw_capture = PiRGBArray(camera, size=camera.resolution)
+    sleep(0.1)  # Allow the camera to warm up
 
     try:
-        while True:
-            ret, frame = cap.read()
-            if not ret:
-                print("End of video stream or error reading frame.")
-                break
+        # Capture frames continuously from the camera
+        for frame in camera.capture_continuous(raw_capture, format="bgr", use_video_port=True):
+            image = frame.array  # Get the current frame as an array
 
             # Process the frame for line detection
-            processed_frame = line_follower.process_frame(frame)
+            processed_frame = line_follower.process_frame(image)
 
             # Direct the robot based on line detection results
             line_follower.direct_to_line()  # Calls motor_control with the appropriate command
@@ -49,9 +47,11 @@ if __name__ == '__main__':
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
 
+            # Clear the stream for the next frame
+            raw_capture.truncate(0)
+
     finally:
         # Release resources and stop the car
-        cap.release()
         cv2.destroyAllWindows()
         motor_controller.carStop()
         motor_controller.carDisconnect()
