@@ -75,9 +75,9 @@ class LineFollower:
         """Process a video file frame by frame."""
         cap = cv2.VideoCapture(video_path)
 
-        if not cap.isOpened():
-            print("Error: Could not open video.")
-            return
+        # if not cap.isOpened():
+        #     print("Error: Could not open video.")
+        #     return
 
         while cap.isOpened():
             ret, frame = cap.read()
@@ -140,3 +140,4 @@ if __name__ == '__main__':
     input_path = "data/vid1.avi"  # Replace with your image or video file path
     line_follower = LineFollower()
     line_follower.process_input(input_path)
+    line_follower.direct_to_line()
