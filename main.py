@@ -1,45 +1,57 @@
-import time
-from motor_cmds import arduino, TestMoteur, carAdvance, carBack, carTurnLeft, carTurnRight, resetENC, carStop
+import cv2
+from line_detection import LineFollower
+from motor_cmds import Urkab
 
-def main():
-    # Ensure the Arduino is connected
-    print("Starting vehicle control...")
 
-    # Example commands to test vehicle functions
-    TestMoteur()
+# Define the motor control function
+def motor_control(command):
+    """Map LineFollower commands to motor actions."""
+    if command == "straight":
+        motor_controller.carAdvance(150, 150)  # Move forward
+    elif command == "left":
+        motor_controller.carTurnLeft(100, 80)  # Turn left
+    elif command == "right":
+        motor_controller.carTurnRight(80, 100)  # Turn right
+    else:
+        motor_controller.carStop()  # Stop if no command
 
-    # Move the vehicle forward for 2 seconds
-    print("Moving forward...")
-    carAdvance(150, 150)
-    time.sleep(2)
-    carStop()
 
-    # Move the vehicle backward for 2 seconds
-    print("Moving backward...")
-    carBack(150, 150)
-    time.sleep(2)
-    carStop()
+if __name__ == '__main__':
+    # Initialize motor controller and line follower with motor control function
+    motor_controller = Urkab()
+    line_follower = LineFollower(motor_control=motor_control)
 
-    # Turn left for 1 second
-    print("Turning left...")
-    carTurnLeft(150, 150)
-    time.sleep(1)
-    carStop()
+    # Replace 'input_path' with your video file path
+    input_path = "data/istockphoto-1219172407-640_adpp_is.mp4"
+    cap = cv2.VideoCapture(input_path)
 
-    # Turn right for 1 second
-    print("Turning right...")
-    carTurnRight(150, 150)
-    time.sleep(1)
-    carStop()
+    if not cap.isOpened():
+        print(f"Error: Could not open video file: {input_path}")
+        exit()
 
-    # Reset encoders
-    print("Resetting encoders...")
-    resetENC()
+    try:
+        while True:
+            ret, frame = cap.read()
+            if not ret:
+                print("End of video stream or error reading frame.")
+                break
 
-    # Close the Arduino connection
-    arduino.write(b'a')  # Disconnect
-    arduino.close()
-    print("Vehicle control finished.")
+            # Process the frame for line detection
+            processed_frame = line_follower.process_frame(frame)
 
-if __name__ == "__main__":
-    main()
+            # Direct the robot based on line detection results
+            line_follower.direct_to_line()  # Calls motor_control with the appropriate command
+
+            # Display the processed frame for visual feedback
+            cv2.imshow("Line Following", processed_frame)
+
+            # Press 'q' to quit the loop early
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+
+    finally:
+        # Release resources and stop the car
+        cap.release()
+        cv2.destroyAllWindows()
+        motor_controller.carStop()
+        motor_controller.carDisconnect()
