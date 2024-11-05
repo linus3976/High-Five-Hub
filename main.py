@@ -22,7 +22,7 @@ if __name__ == '__main__':
     line_follower = LineFollower(motor_control=motor_control)
 
     # Replace 'input_path' with your video file path
-    input_path = "data/istockphoto-1219172407-640_adpp_is.mp4"
+    input_path = "data/istockphoto-1311104240-640_adpp_is.mp4"
     cap = cv2.VideoCapture(input_path)
 
     if not cap.isOpened():
