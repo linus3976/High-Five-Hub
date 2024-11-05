@@ -9,11 +9,11 @@ from time import sleep
 def motor_control(command):
     """Map LineFollower commands to motor actions."""
     if command == "straight":
-        motor_controller.carAdvance(150, 150)  # Move forward
+        motor_controller.carAdvance(200, 200)  # Move forward
     elif command == "left":
-        motor_controller.carTurnLeft(100, 80)  # Turn left
+        motor_controller.carTurnLeft(150, 150)  # Turn left
     elif command == "right":
-        motor_controller.carTurnRight(80, 100)  # Turn right
+        motor_controller.carTurnRight(150, 150)  # Turn right
     else:
         motor_controller.carStop()  # Stop if no command
 
