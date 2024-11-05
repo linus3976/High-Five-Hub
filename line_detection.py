@@ -133,6 +133,8 @@ class LineFollower:
         else:
             print("Turn right")
             self.motor_control("right")
+
+
 # if __name__ == '__main__':
 #     # Example usage
 #     input_path = "data/istockphoto-1219172407-640_adpp_is.mp4"  # Replace with your image or video file path
