@@ -137,6 +137,6 @@ class LineFollower:
 
 if __name__ == '__main__':
     # Example usage
-    input_path = "data/vid2.mp4"  # Replace with your image or video file path
+    input_path = "data/vid1.avi"  # Replace with your image or video file path
     line_follower = LineFollower()
     line_follower.process_input(input_path)
