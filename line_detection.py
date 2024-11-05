@@ -1,9 +1,13 @@
 import cv2
 import numpy as np
 import os
+from picamera import PiCamera
+from picamera.array import PiRGBArray
+from time import sleep
 
 class LineFollower:
-    def __init__(self, motor_control = None):
+    def __init__(self, motor_control=None):
+        # Initialize image processing attributes
         self.kernel_erode = np.ones((6, 6), np.uint8)
         self.kernel_dilate = np.ones((4, 4), np.uint8)
         self.cx = 0
@@ -11,6 +15,12 @@ class LineFollower:
         self.distance = 0
         self.motor_control = motor_control  # Reference to motor control function
 
+        # Initialize PiCamera settings
+        self.camera = PiCamera()
+        self.camera.resolution = (160, 128)
+        self.camera.framerate = 32
+        self.raw_capture = PiRGBArray(self.camera, size=self.camera.resolution)
+        sleep(0.1)  # Allow the camera to warm up
 
     def get_attributes(self):
         """getter to have access to the values"""
@@ -71,55 +81,38 @@ class LineFollower:
             print("Distance from center to centroid: {:.2f}".format(self.distance))
         return im2
 
-    def process_video(self, video_path):
-        """Process a video file frame by frame."""
-        cap = cv2.VideoCapture(video_path)
-
-        # if not cap.isOpened():
-        #     print("Error: Could not open video.")
-        #     return
-
-        while cap.isOpened():
-            ret, frame = cap.read()
-            if not ret:
-                print("End of video stream.")
-                break
-
-            output_frame = self.process_frame(frame)
+    def process_video(self):
+        """Process the live feed from the PiCamera frame by frame."""
+        for frame in self.camera.capture_continuous(self.raw_capture, format="bgr", use_video_port=True):
+            image = frame.array
+            output_frame = self.process_frame(image)
             cv2.imshow("Processed Video", output_frame)
 
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
 
-        cap.release()
+            # Clear the stream in preparation for the next frame
+            self.raw_capture.truncate(0)
+
         cv2.destroyAllWindows()
 
-    def process_image_file(self, image_path):
-        """Process a single image file."""
-        frame = cv2.imread(image_path)
-        if frame is None:
-            print("Error: Could not open image.")
-            return
+    def process_input(self, input_path=None):
+        """Process either an input file or the PiCamera stream."""
+        if input_path:
+            _, ext = os.path.splitext(input_path)
+            ext = ext.lower()
 
-        output_frame = self.process_frame(frame)
-        cv2.imshow("Processed Image", output_frame)
-        cv2.imwrite("processed_image.png", output_frame)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
-
-    def process_input(self, input_path):
-        """Process an input file (image or video)."""
-        _, ext = os.path.splitext(input_path)
-        ext = ext.lower()
-
-        if ext in ['.jpg', '.jpeg', '.png', '.bmp']:
-            print("Processing image...")
-            self.process_image_file(input_path)
-        elif ext in ['.mp4', '.avi', '.mov']:
-            print("Processing video...")
-            self.process_video(input_path)
+            if ext in ['.jpg', '.jpeg', '.png', '.bmp']:
+                print("Processing image...")
+                self.process_image_file(input_path)
+            elif ext in ['.mp4', '.avi', '.mov']:
+                print("Processing video...")
+                self.process_video(input_path)
+            else:
+                print("Unsupported file format.")
         else:
-            print("Unsupported file format.")
+            print("Processing live PiCamera feed...")
+            self.process_video()
 
     def direct_to_line(self):
         """Direct the vehicle based on line position."""
@@ -134,10 +127,7 @@ class LineFollower:
             print("Turn right")
             self.motor_control("right")
 
-
 if __name__ == '__main__':
     # Example usage
-    input_path = "data/vid1.avi"  # Replace with your image or video file path
     line_follower = LineFollower()
-    line_follower.process_input(input_path)
-    line_follower.direct_to_line()
+    line_follower.process_input()  # No input path to use PiCamera feed
