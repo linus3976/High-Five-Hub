@@ -1,26 +1,14 @@
 import cv2
 import numpy as np
-import os
-from picamera import PiCamera
-from picamera.array import PiRGBArray
-from time import sleep
 
 class LineFollower:
     def __init__(self, motor_control=None):
-        # Initialize image processing attributes
         self.kernel_erode = np.ones((6, 6), np.uint8)
         self.kernel_dilate = np.ones((4, 4), np.uint8)
         self.cx = 0
         self.cy = 0
         self.distance = 0
         self.motor_control = motor_control  # Reference to motor control function
-
-        # Initialize PiCamera settings
-        self.camera = PiCamera()
-        self.camera.resolution = (160, 128)
-        self.camera.framerate = 32
-        self.raw_capture = PiRGBArray(self.camera, size=self.camera.resolution)
-        sleep(0.1)  # Allow the camera to warm up
 
     def get_attributes(self):
         """getter to have access to the values"""
@@ -51,9 +39,6 @@ class LineFollower:
 
         # Find contours
         contours, _ = cv2.findContours(dilated_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-
-        # Draw contours on the original frame
-        im2 = cv2.drawContours(frame.copy(), contours, -1, (0, 255, 0), 3)
         print("Number of contours detected:", len(contours))
 
         # Keep only the largest contour
@@ -67,52 +52,15 @@ class LineFollower:
                 self.cx = int(M['m10'] / M['m00'])
                 self.cy = int(M['m01'] / M['m00'])
                 print("Centroid of the biggest area: ({}, {})".format(self.cx, self.cy))
-                cv2.circle(im2, (self.cx, self.cy), 5, (255, 0, 0), -1)  # Draw centroid
-                centroid = (self.cx, self.cy)  # Store centroid coordinates
-
-        # Draw a point at (0, 0) and the center of the frame
-        cv2.circle(im2, (0, 0), 5, (0, 0, 255), -1)
-        center_x, center_y = w // 2, h // 2
-        cv2.circle(im2, (center_x, center_y), 5, (255, 255, 0), -1)
+                centroid = (self.cx, self.cy)
 
         # Calculate distance if centroid found
         if centroid is not None:
+            center_x = w // 2
             self.distance = center_x - centroid[0]
             print("Distance from center to centroid: {:.2f}".format(self.distance))
-        return im2
 
-    def process_video(self):
-        """Process the live feed from the PiCamera frame by frame."""
-        for frame in self.camera.capture_continuous(self.raw_capture, format="bgr", use_video_port=True):
-            image = frame.array
-            output_frame = self.process_frame(image)
-            cv2.imshow("Processed Video", output_frame)
-
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
-
-            # Clear the stream in preparation for the next frame
-            self.raw_capture.truncate(0)
-
-        cv2.destroyAllWindows()
-
-    def process_input(self, input_path=None):
-        """Process either an input file or the PiCamera stream."""
-        if input_path:
-            _, ext = os.path.splitext(input_path)
-            ext = ext.lower()
-
-            if ext in ['.jpg', '.jpeg', '.png', '.bmp']:
-                print("Processing image...")
-                self.process_image_file(input_path)
-            elif ext in ['.mp4', '.avi', '.mov']:
-                print("Processing video...")
-                self.process_video(input_path)
-            else:
-                print("Unsupported file format.")
-        else:
-            print("Processing live PiCamera feed...")
-            self.process_video()
+        return frame
 
     def direct_to_line(self):
         """Direct the vehicle based on line position."""
@@ -126,8 +74,3 @@ class LineFollower:
         else:
             print("Turn right")
             self.motor_control("right")
-
-if __name__ == '__main__':
-    # Example usage
-    line_follower = LineFollower()
-    line_follower.process_input()  # No input path to use PiCamera feed
