@@ -78,7 +78,11 @@ class Urkab():
             rep = self.arduino.readline()
         print("Response is:", end=" ")
         print(rep)
-        decoded = rep.decode()
+        try:
+            decoded = rep.decode()
+        except UnicodeDecodeError:
+            # use hexadecimal decoding insted
+            decoded = int(rep[0])
         logging.info(decoded)
         return decoded
 
