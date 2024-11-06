@@ -1,39 +1,50 @@
-# PID parameters
-kp = 1.0  # Proportional gain
-ki = 0.1  # Integral gain
-kd = 0.05  # Derivative gain
-setpoint = 0  # Desired target value
+class PIDController:
+    def __init__(self, kp, ki, kd, dt, base_speed, setpoint=0):
+        # PID parameters
+        self.kp = kp  # Proportional gain
+        self.ki = ki  # Integral gain
+        self.kd = kd  # Derivative gain
+        self.dt = dt
+        self.base_speed = base_speed
+        self.setpoint = setpoint  # Desired target value
+        
+        # State variables
+        self.previous_error = 0
+        self.integral = 0
 
-# State variables
-previous_error = 0
-integral = 0
-
-def pid_update(base_speed, current_value, dt):
-    global previous_error, integral
-    
-    # Calculate the error between the setpoint and the current value
-    error = setpoint - current_value
-    
-    # Proportional term
-    p_term = kp * error
-    
-    # Integral term
-    integral += error * dt  # Sum of errors over time
-    i_term = ki * integral
-    
-    # Derivative term
-    derivative = (error - previous_error) / dt if dt > 0 else 0  # Change in error
-    d_term = kd * derivative
-    
-    # Update the previous error for the next iteration
-    previous_error = error
-    
-    # Calculate the total control output
-    output = p_term + i_term + d_term
-    
-    left_motor_speed = max(0, min(255, base_speed - output))
-    right_motor_speed = max(0, min(255, base_speed + output))
-    
-    return left_motor_speed, right_motor_speed
+    def update(self, current_value):
+        """
+        Calculate the control output for adjusting motor speeds.
+        
+        :param base_speed: Base speed for the motors when the car is on the line.
+        :param current_value: Current measured value (e.g., distance from the line).
+        :param dt: Time difference between measurements (in seconds).
+        :return: Tuple (left_motor_speed, right_motor_speed)
+        """
+        # Calculate the error between the setpoint and the current value
+        error = self.setpoint - current_value
+        
+        # Proportional term
+        p_term = self.kp * error
+        
+        # Integral term
+        self.integral += error * self.dt  # Sum of errors over time
+        i_term = self.ki * self.integral
+        
+        # Derivative term
+        derivative = (error - self.previous_error) / self.dt if self.dt > 0 else 0  # Change in error
+        d_term = self.kd * derivative
+        
+        # Update the previous error for the next iteration
+        self.previous_error = error
+        
+        # Calculate the total control output
+        output = p_term + i_term + d_term
+        
+        # Calculate motor speeds with output adjustment
+        left_motor_speed = max(0, min(255, self.base_speed - output))
+        right_motor_speed = max(0, min(255, self.base_speed + output))
+        
+        return left_motor_speed, right_motor_speed
 
 

@@ -1,6 +1,7 @@
 import cv2
 from line_detection import LineFollower
 from motor_cmds import Urkab
+from PID import PIDController
 from picamera import PiCamera
 from picamera.array import PiRGBArray
 from time import sleep
@@ -21,6 +22,7 @@ if __name__ == '__main__':
     # Initialize motor controller and line follower with motor control function
     motor_controller = Urkab()
     line_follower = LineFollower(motor_control=motor_control)
+    PID_control = PIDController(0.5, 0.1, 0.2, 0.1, 200, 0) # values: kp, ki, kd, dt, base_speed, setpoint
 
     # Initialize the PiCamera
     camera = PiCamera()
@@ -38,7 +40,10 @@ if __name__ == '__main__':
             processed_frame = line_follower.process_frame(image)
 
             # Direct the robot based on line detection results
-            line_follower.direct_to_line()  # Calls motor_control with the appropriate command
+            motor_left, motor_right = PID_control.update(line_follower.get_attributes())    #calculates control motor inputs
+            line_follower.apply_control(motor_left, motor_right, motor_controller)          #applies control
+            
+            #line_follower.direct_to_line()  # Calls motor_control with the appropriate command
 
             # Display the processed frame for visual feedback
             cv2.imshow("Line Following", processed_frame)

@@ -1,5 +1,7 @@
 import cv2
 import numpy as np
+from PID import PIDController
+from motor_cmds import Urkab
 
 class LineFollower:
     def __init__(self, motor_control=None):
@@ -9,10 +11,12 @@ class LineFollower:
         self.cy = 0
         self.distance = 0
         self.motor_control = motor_control  # Reference to motor control function
+        
 
     def get_attributes(self):
         """getter to have access to the values"""
         return self.distance
+    
 
     def process_frame(self, frame):
         """Process a single frame (image) for line detection."""
@@ -74,3 +78,15 @@ class LineFollower:
         else:
             print("Turn right")
             self.motor_control("right")
+            
+    def apply_control(self, motor_left, motor_right, urkab):
+        """Direct the vehicle based on line position."""
+        
+        threshold = 2  # Small threshold to account for minor deviations
+        if abs(self.distance) <= threshold:
+            print("Go straight")
+            self.motor_control("straight")
+        else :
+            urkab.carAdvance(motor_right, motor_left)
+            print("Right: ", motor_right, " Left: ", motor_left)
+            
