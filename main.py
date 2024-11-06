@@ -35,28 +35,20 @@ if __name__ == '__main__':
         avoiding_obstacle = False
         motor_controller.carDeactivateEmergencyStop()
         while True:
-            # Check distance to obstacle
-            dist = motor_controller.getUltrasonicDist()
-            print(dist)
-            if dist < 10:
-                if not avoiding_obstacle:
-                    print("Obstacle detected. Avoiding...")
-                    avoiding_obstacle = True
-                    motor_controller.carStop()
-                motor_controller.avoid_obstacle_right()
-
-            else:
-                if avoiding_obstacle:
-                    # Reset the servo, resume line following
-                    print("Obstacle cleared. Resuming line follow.")
-                    motor_controller.moveUltrasonic(0)
-                    avoiding_obstacle = False
-
                 # Process the frame and direct the vehicle
                 for frame in camera.capture_continuous(raw_capture, format="bgr", use_video_port=True):
                     image = frame.array
                     processed_frame = line_follower.process_frame(image)
-                    line_follower.direct_to_line()
+                    # Check distance to obstacle
+                    dist = motor_controller.getUltrasonicDist()
+                    print(dist)
+                    if dist < 10:
+                        print("Obstacle detected. Avoiding...")
+                        motor_controller.avoid_obstacle_right()
+                        motor_controller.carStop()
+                    else:
+                        line_follower.direct_to_line()
+
                     cv2.imshow("Line Following", processed_frame)
 
                     if cv2.waitKey(1) & 0xFF == ord('q'):
