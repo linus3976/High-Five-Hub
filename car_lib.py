@@ -144,6 +144,7 @@ class Urkab():
     def avoid_obstacle_right(self):
         """Move right while keeping the ultrasonic pointed left to track obstacle."""
         # Turn the car right
+        print("Got to avoid_obstacle_right")
         self.carTurnRight(150,150)
         while self.getUltrasonicDist() < 15:
             print(self.getUltrasonicDist())
