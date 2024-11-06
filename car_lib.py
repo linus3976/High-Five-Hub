@@ -76,6 +76,8 @@ class Urkab():
         rep = b''
         while rep == b'':
             rep = self.arduino.readline()
+        print("Response is:", end=" ")
+        print(rep)
         decoded = rep.decode()
         logging.info(decoded)
         return decoded
