@@ -4,9 +4,10 @@ import time
 from line_detection import LineFollower
 from motor_cmds import Urkab
 
-from PID import PIDController
 from picamera import PiCamera
 from picamera.array import PiRGBArray
+from PID import PIDController
+
 from time import sleep
 
 # Define the motor control function
