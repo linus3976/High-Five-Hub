@@ -41,6 +41,7 @@ if __name__ == '__main__':
     sleep(0.1)  # Allow the camera to warm up
 
     try:
+        motor_controller.carDeactivateEmergencyStop()
         turning_mode = False
         lost_line = False
         # Capture frames continuously from the camera
