@@ -128,6 +128,9 @@ class Urkab():
         self.arduino.write(b's')
         return int(self.AttAcquit())
 
+    def moveUltrasonic(self, angle):
+        self.envoiCmdi(b'G', angle, 0, 0, 0)
+
     def carDisconnect(self):
         self.arduino.write(b'a')  # deconnection de la carte
         self.arduino.close()  # fermeture de la liaison série
