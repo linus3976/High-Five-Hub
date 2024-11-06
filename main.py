@@ -54,13 +54,13 @@ if __name__ == '__main__':
             if ultrasonic_distance < 10:
                 turning_mode = True
 
-            # Refound the line
-            if turning_mode and lost_line and processed_frame.any():
+            # Re-found the line
+            if turning_mode and lost_line and processed_frame is not None:
                 turning_mode = False
                 lost_line = False
 
 
-            if not processed_frame.any():
+            if processed_frame is None:
                 # No line detected, turn the car
                 lost_line = True
                 turning_mode = True
