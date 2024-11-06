@@ -141,5 +141,12 @@ class Urkab():
         self.arduino.close()  # fermeture de la liaison série
         logging.info("Arduino disconnected")
 
+    def avoid_obstacle_right(self):
+        """Move right while keeping the ultrasonic pointed left to track obstacle."""
+        # Turn the car right
+        self.carTurnRight(150, 150)
+        # Move the ultrasonic servo to left (e.g., -45 degrees)
+        self.moveUltrasonic(-45)
+
     def __del__(self):
         self.carDisconnect()
