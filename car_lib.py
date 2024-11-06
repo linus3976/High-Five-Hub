@@ -148,11 +148,11 @@ class Urkab():
 
             # Step 1: Turn right initially to start bypassing the obstacle
             self.carTurnRight(200, 200)
+            self.moveUltrasonic(45)  # Angle the ultrasonic sensor to the left
             # self.carAdvance(200, 200)  #
             time.sleep(0.5)  # Small delay to clear the front of the obstacle
 
             # Step 2: Move forward with ultrasonic pointed left to track the obstacle
-            self.moveUltrasonic(-45)  # Angle the ultrasonic sensor to the left
             logging.debug("moved ultrasonic to 45 degrees")
             while self.getUltrasonicDist() < 15 and self.getUltrasonicDist() != 4 and self.getUltrasonicDist() != 3:  # Drive alongside the obstacle
                 print("Keeping safe distance from obstacle...")
@@ -161,7 +161,7 @@ class Urkab():
                 time.sleep(0.1)
                 if self.getUltrasonicDist() >= 15:
                     logging.debug("moved ultrasonic to 90 degrees")
-                    self.moveUltrasonic(-90)  # Angle the ultrasonic sensor to the left
+                    self.moveUltrasonic(90)  # Angle the ultrasonic sensor to the left
 
             # Step 3: Once clear, turn left to resume line-following direction
             print("Obstacle bypassed, realigning with line...")
