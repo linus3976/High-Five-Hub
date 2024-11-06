@@ -21,7 +21,7 @@ class LineFollower:
     def process_frame(self, frame):
         """Process a single frame (image) for line detection."""
         h, w = frame.shape[:2]
-        logging.info("Width, Height:", w, h)
+        logging.info(f"Width, Height: {w}, {h}")
 
         # Apply Gaussian blur
         blur = cv2.blur(frame, (5, 5))
