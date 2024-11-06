@@ -43,7 +43,7 @@ class LineFollower:
 
         # Find contours
         contours, _ = cv2.findContours(dilated_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-        logging.info("Number of contours detected:", len(contours))
+        logging.info(f"Number of contours detected: {len(contours)}")
 
         if len(contours) != 1:
             # no line found
