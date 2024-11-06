@@ -67,6 +67,7 @@ if __name__ == '__main__':
 
             if turning_mode:
                 motor_controller.carTurnLeft(200, 200)
+                raw_capture.truncate(0)
                 continue
 
             # Direct the robot based on line detection results
