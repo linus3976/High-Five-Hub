@@ -1,8 +1,6 @@
 import cv2
 import time
 
-from pygame.examples.go_over_there import delta_time
-
 from line_detection import LineFollower
 from motor_cmds import Urkab
 from PID import PIDController
