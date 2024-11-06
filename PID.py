@@ -1,3 +1,5 @@
+import time
+
 class PIDController:
     def __init__(self, kp, ki, kd, dt, base_speed, setpoint=0):
         # PID parameters
@@ -11,6 +13,7 @@ class PIDController:
         # State variables
         self.previous_error = 0
         self.integral = 0
+
 
     def update(self, current_value):
         """
@@ -44,7 +47,7 @@ class PIDController:
         # Calculate motor speeds with output adjustment
         left_motor_speed = int(max(0, min(255, self.base_speed + output)))
         right_motor_speed = int(max(0, min(255, self.base_speed - output)))
-        
+
         return left_motor_speed, right_motor_speed
 
 

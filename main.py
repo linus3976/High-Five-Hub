@@ -1,4 +1,5 @@
 import cv2
+import time
 from line_detection import LineFollower
 from motor_cmds import Urkab
 from PID import PIDController
@@ -24,6 +25,8 @@ if __name__ == '__main__':
     line_follower = LineFollower(motor_control=motor_control)
     PID_control = PIDController(0.5, 0.1, 0.2, 0.1, 200, 0) # values: kp, ki, kd, dt, base_speed, setpoint
 
+    previous_time = time.perf_counter()
+
     # Initialize the PiCamera
     camera = PiCamera()
     camera.resolution = (160, 128)
@@ -41,7 +44,13 @@ if __name__ == '__main__':
 
             # Direct the robot based on line detection results
             motor_left, motor_right = PID_control.update(line_follower.get_attributes())    #calculates control motor inputs
-            line_follower.apply_control(motor_left, motor_right, motor_controller)          #applies control
+            line_follower.apply_control(motor_left, motor_right, motor_controller)
+
+            current_time = time.perf_counter()
+            delta_t = current_time - previous_time
+            print(delta_t)
+            previous_time = current_time
+            #applies control
             
             #line_follower.direct_to_line()  # Calls motor_control with the appropriate command
 
