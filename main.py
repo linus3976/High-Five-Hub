@@ -24,7 +24,7 @@ if __name__ == '__main__':
     # Initialize motor controller and line follower with motor control function
     motor_controller = Urkab()
     line_follower = LineFollower(motor_control=motor_control)
-    PID_control = PIDController(3, 0.4, 1.2, 230, 0) # values: kp, ki, kd, base_speed, setpoint
+    PID_control = PIDController(3, 0.4, 1.2, 255, 0) # values: kp, ki, kd, base_speed, setpoint
 
     previous_time = time.perf_counter()
     delta_time = 0.1
