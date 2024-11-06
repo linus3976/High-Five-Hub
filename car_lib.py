@@ -76,12 +76,10 @@ class Urkab():
         rep = b''
         while rep == b'':
             rep = self.arduino.readline()
-        print("Response is:", end=" ")
-        print(rep)
         try:
             decoded = rep.decode()
         except UnicodeDecodeError:
-            # use hexadecimal decoding insted
+            # use hexadecimal decoding instead
             decoded = int(rep[0])
         logging.info(decoded)
         return decoded
@@ -133,7 +131,6 @@ class Urkab():
     def getUltrasonicDist(self):
         self.arduino.write(b's')
         resp = self.AttAcquit()
-        print(resp)
         return int(resp)
 
     def moveUltrasonic(self, angle):
