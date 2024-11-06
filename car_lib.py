@@ -146,7 +146,9 @@ class Urkab():
         # Turn the car right
         self.carTurnRight(150,150)
         while self.getUltrasonicDist() < 15:
-            pass
+            print(self.getUltrasonicDist())
+            print("in while loop")
+
         self.carAdvance(150, 250)
         # Move the ultrasonic servo to left (e.g., -45 degrees)
         self.moveUltrasonic(-45)
