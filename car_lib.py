@@ -130,7 +130,7 @@ class Urkab():
 
     def getUltrasonicDist(self):
         self.arduino.write(b's')
-        resp = self.AttAcquit()
+        resp = self.AttAcquit(intresp=True)
         return int(resp)
 
     def moveUltrasonic(self, angle):
