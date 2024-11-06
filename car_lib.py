@@ -143,16 +143,47 @@ class Urkab():
 
     def avoid_obstacle_right(self):
         """Move right while keeping the ultrasonic pointed left to track obstacle."""
-        # Turn the car right
-        print("Got to avoid_obstacle_right")
-        self.carTurnRight(150,150)
-        while self.getUltrasonicDist() < 15:
-            print(self.getUltrasonicDist())
-            print("in while loop")
+        print("Avoiding obstacle on the right side...")
 
-        self.carAdvance(150, 250)
-        # Move the ultrasonic servo to left (e.g., -45 degrees)
-        self.moveUltrasonic(-45)
+        # Step 1: Initial right turn to bypass obstacle
+        self.carTurnRight(150, 150)
+        time.sleep(0.5)  # Brief delay to clear obstacle front
+
+        # Step 2: Move forward with ultrasonic initially at -45 degrees
+        self.moveUltrasonic(-45)  # Point sensor left at -45 degrees
+        sensor_position = -45  # Track the current ultrasonic angle
+
+        while True:
+            dist = self.getUltrasonicDist()
+            print(f"Distance to obstacle: {dist}")
+
+            # Drive alongside the obstacle while within 15 cm
+            if dist < 15:
+                self.carAdvance(150, 150)
+                time.sleep(0.1)
+            else:
+                # If the obstacle distance is greater than 15 cm, adjust ultrasonic
+                if sensor_position > -90:
+                    sensor_position -= 45  # Move ultrasonic to an additional -45 degrees
+                    self.moveUltrasonic(sensor_position)
+                    print(f"Adjusted ultrasonic to {sensor_position} degrees")
+
+                # Keep moving forward to track if obstacle is on the side
+                self.carAdvance(150, 150)
+                time.sleep(0.1)
+
+            # Stop when no obstacle is detected in either position
+            if dist >= 30:  # Threshold to consider obstacle cleared
+                break
+
+        # Step 3: Realign with the line direction
+        print("Obstacle bypassed, realigning with line...")
+        self.moveUltrasonic(0)  # Reset ultrasonic to the front
+        self.carTurnLeft(150, 150)
+        time.sleep(0.5)  # Adjust timing to realign
+
+        # Step 4: Stop and resume normal operation
+        self.carStop()
 
     def __del__(self):
         self.carDisconnect()
