@@ -144,7 +144,10 @@ class Urkab():
     def avoid_obstacle_right(self):
         """Move right while keeping the ultrasonic pointed left to track obstacle."""
         # Turn the car right
-        self.carAdvance(250, 150)
+        self.carTurnRight(150,150)
+        while self.getUltrasonicDist() < 15:
+            pass
+        self.carAdvance(150, 250)
         # Move the ultrasonic servo to left (e.g., -45 degrees)
         self.moveUltrasonic(-45)
 
