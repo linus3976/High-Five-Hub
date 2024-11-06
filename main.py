@@ -37,6 +37,7 @@ if __name__ == '__main__':
         while True:
             # Check distance to obstacle
             dist = motor_controller.getUltrasonicDist()
+            print(dist)
             if dist < 10:
                 if not avoiding_obstacle:
                     print("Obstacle detected. Avoiding...")
