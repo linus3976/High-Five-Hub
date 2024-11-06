@@ -80,7 +80,9 @@ class Urkab():
         try:
             decoded = rep.decode()
         except UnicodeDecodeError:
-            logging.debug("UnicodeDecodeError")
+            print("UnicodeDecodeError")
+            print("Response is", end=" ")
+            print(rep)
             # use hexadecimal decoding instead
             decoded = int(rep[0])
         logging.info(decoded)
