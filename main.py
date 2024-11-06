@@ -55,12 +55,12 @@ if __name__ == '__main__':
                 turning_mode = True
 
             # Refound the line
-            if turning_mode and lost_line and processed_frame:
+            if turning_mode and lost_line and processed_frame.any():
                 turning_mode = False
                 lost_line = False
 
 
-            if not processed_frame:
+            if not processed_frame.any():
                 # No line detected, turn the car
                 lost_line = True
                 turning_mode = True
