@@ -151,7 +151,7 @@ class Urkab():
 
         # Step 2: Move forward with ultrasonic pointed left to track the obstacle
         self.moveUltrasonic(-45)  # Angle the ultrasonic sensor to the left
-        while self.getUltrasonicDist() < 15:  # Drive alongside the obstacle
+        while self.getUltrasonicDist() < 15 and self.getUltrasonicDist() != 4:  # Drive alongside the obstacle
             print("Keeping safe distance from obstacle...")
             self.carAdvance(150, 150)
             time.sleep(0.1)
