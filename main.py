@@ -44,7 +44,7 @@ if __name__ == '__main__':
                 dist = motor_controller.getUltrasonicDist()
                 print(f"Distance to obstacle: {dist}")
 
-                if dist < 10 and dist !=4 and dist !=3:  # Trigger obstacle avoidance if object is close
+                if dist < 10 and dist !=4 and dist != 3:  # Trigger obstacle avoidance if object is close
                     print("Obstacle detected. Avoiding...")
                     motor_controller.avoid_obstacle_right()
                 else:

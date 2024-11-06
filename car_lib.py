@@ -146,12 +146,13 @@ class Urkab():
         print("Avoiding obstacle on the right side...")
 
         # Step 1: Turn right initially to start bypassing the obstacle
-        self.carTurnRight(150, 150)
+        self.carTurnRight(200, 200)
+        # self.carAdvance(200, 200)  #
         time.sleep(0.5)  # Small delay to clear the front of the obstacle
 
         # Step 2: Move forward with ultrasonic pointed left to track the obstacle
         self.moveUltrasonic(-45)  # Angle the ultrasonic sensor to the left
-        while self.getUltrasonicDist() < 15 and self.getUltrasonicDist() != 4:  # Drive alongside the obstacle
+        while self.getUltrasonicDist() < 15 and self.getUltrasonicDist() != 4 and self.getUltrasonicDist() != 3:  # Drive alongside the obstacle
             print("Keeping safe distance from obstacle...")
             self.carAdvance(150, 150)
             time.sleep(0.1)
