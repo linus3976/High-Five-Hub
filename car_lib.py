@@ -79,6 +79,8 @@ class Urkab():
         logging.debug(f"Acquitted response is: {rep}")
         try:
             decoded = rep.decode()
+            print("No UnicodeDecodeError, decoded is", end=" ")
+            print(decoded)
         except UnicodeDecodeError:
             print("UnicodeDecodeError")
             print("Response is", end=" ")
