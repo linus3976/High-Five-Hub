@@ -13,9 +13,9 @@ class Urkab():
             rep = self.arduino.readline()
         logging.debug("Validating connection...")
 
-        time.sleep(2)  # on attend 2s pour que la carte soit initialisée
+        time.sleep(2)
 
-        self.arduino.write(b'A22')  # demande de connection avec acquitement par OK
+        self.arduino.write(b'A22')
         rep = self.arduino.readline()
         if rep.split()[0] == b'OK':
             logging.info("Arduino connected")
@@ -74,9 +74,11 @@ class Urkab():
 
     def AttAcquit(self):
         rep = b''
-        while rep == b'':  # attend l'acquitement du B2
+        while rep == b'':
             rep = self.arduino.readline()
-        print(rep.decode())
+        decoded = rep.decode()
+        logging.info(decoded)
+        return decoded
 
 
     def resetENC(self):
@@ -121,6 +123,10 @@ class Urkab():
     def carResetEmergencyStop(self):
         self.arduino.write(b'I1')
         self.AttAcquit()
+
+    def getUltrasonicDist(self):
+        self.arduino.write(b's')
+        return int(self.AttAcquit())
 
     def carDisconnect(self):
         self.arduino.write(b'a')  # deconnection de la carte
