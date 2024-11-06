@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 from PID import PIDController
+from car_lib import Urkab
 
 class LineFollower:
     def __init__(self, motor_control=None):
@@ -15,9 +16,10 @@ class LineFollower:
     def get_attributes(self):
         """getter to have access to the values"""
         return self.distance
+    
 
     def process_frame(self, frame):
-        """Process a single frame (image) for line detection and visualization."""
+        """Process a single frame (image) for line detection."""
         h, w = frame.shape[:2]
         print("Width, Height:", w, h)
 
@@ -49,9 +51,6 @@ class LineFollower:
         # Initialize centroid variable
         centroid = None
         if len(contours) > 0:
-            # Draw the largest contour on the frame
-            cv2.drawContours(frame, contours, -1, (0, 255, 0), 2)
-
             M = cv2.moments(contours[0])
             if M['m00'] != 0:
                 self.cx = int(M['m10'] / M['m00'])
@@ -59,19 +58,11 @@ class LineFollower:
                 print("Centroid of the biggest area: ({}, {})".format(self.cx, self.cy))
                 centroid = (self.cx, self.cy)
 
-                # Draw the centroid
-                cv2.circle(frame, centroid, 5, (255, 0, 0), -1)
-
-        # Draw center line for reference
-        center_x = w // 2
-        cv2.line(frame, (center_x, 0), (center_x, h), (255, 255, 0), 2)
-
         # Calculate distance if centroid found
         if centroid is not None:
+            center_x = w // 2
             self.distance = center_x - centroid[0]
             print("Distance from center to centroid: {:.2f}".format(self.distance))
-            # Optionally display distance on the frame
-            cv2.putText(frame, f"Dist: {self.distance}", (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
 
         return frame
 

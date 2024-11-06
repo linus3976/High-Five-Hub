@@ -147,7 +147,10 @@ class Urkab():
         logging.debug("Avoiding obstacle on the right side...")
 
         # Step 1: Turn right initially to start bypassing the obstacle
-        self.carTurnRight(200, 200)
+        self.carStop()
+        # self.carTurnRight(200, 200)
+        self.carAdvance(200, 150)
+
         self.moveUltrasonic(45)  # Angle the ultrasonic sensor to the left
         # self.carAdvance(200, 200)  #
         time.sleep(0.5)  # Small delay to clear the front of the obstacle
