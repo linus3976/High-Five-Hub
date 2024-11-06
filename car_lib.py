@@ -141,32 +141,40 @@ class Urkab():
         self.arduino.close()  # fermeture de la liaison série
         logging.info("Arduino disconnected")
 
-    def avoid_obstacle_right(self):
-        """Move right while keeping the ultrasonic pointed left to track obstacle."""
-        print("Avoiding obstacle on the right side...")
+        def avoid_obstacle_right(self):
+            """Move right while keeping the ultrasonic pointed left to track obstacle."""
+            print("Avoiding obstacle on the right side...")
+            logging.debug("Avoiding obstacle on the right side...")
 
-        # Step 1: Turn right initially to start bypassing the obstacle
-        self.carTurnRight(200, 200)
-        # self.carAdvance(200, 200)  #
-        time.sleep(0.5)  # Small delay to clear the front of the obstacle
+            # Step 1: Turn right initially to start bypassing the obstacle
+            self.carTurnRight(200, 200)
+            # self.carAdvance(200, 200)  #
+            time.sleep(0.5)  # Small delay to clear the front of the obstacle
 
-        # Step 2: Move forward with ultrasonic pointed left to track the obstacle
-        self.moveUltrasonic(-45)  # Angle the ultrasonic sensor to the left
-        while self.getUltrasonicDist() < 15 and self.getUltrasonicDist() != 4 and self.getUltrasonicDist() != 3:  # Drive alongside the obstacle
-            print("Keeping safe distance from obstacle...")
-            self.carAdvance(150, 150)
-            time.sleep(0.1)
-            if self.getUltrasonicDist() >= 15:
-                self.moveUltrasonic(-90)  # Angle the ultrasonic sensor to the left
+            # Step 2: Move forward with ultrasonic pointed left to track the obstacle
+            self.moveUltrasonic(-45)  # Angle the ultrasonic sensor to the left
+            logging.debug("moved ultrasonic to 45 degrees")
+            while self.getUltrasonicDist() < 15 and self.getUltrasonicDist() != 4 and self.getUltrasonicDist() != 3:  # Drive alongside the obstacle
+                print("Keeping safe distance from obstacle...")
+                logging.debug("Keeping safe distance from obstacle... ultrasonic distance is lower than 15")
+                self.carAdvance(150, 150)
+                time.sleep(0.1)
+                if self.getUltrasonicDist() >= 15:
+                    logging.debug("moved ultrasonic to 90 degrees")
+                    self.moveUltrasonic(-90)  # Angle the ultrasonic sensor to the left
 
-        # Step 3: Once clear, turn left to resume line-following direction
-        print("Obstacle bypassed, realigning with line...")
-        self.moveUltrasonic(0)  # Reset the ultrasonic sensor to the front
-        self.carTurnLeft(150, 150)
-        time.sleep(0.5)  # Adjust timing as needed to realign with the line
+            # Step 3: Once clear, turn left to resume line-following direction
+            print("Obstacle bypassed, realigning with line...")
+            logging.debug("Obstacle bypassed, realigning with line...")
 
-        # Step 4: Resume normal operation
-        self.carStop()
+            self.moveUltrasonic(0)  # Reset the ultrasonic sensor to the front
+            logging.debug("RESET ULTRASONIC SERVO")
+            self.carTurnLeft(200, 200)
+            logging.debug("TURN BACK")
+            time.sleep(0.5)  # Adjust timing as needed to realign with the line
+
+            # Step 4: Resume normal operation
+            self.carStop()
 
     def __del__(self):
         self.carDisconnect()
