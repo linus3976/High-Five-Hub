@@ -22,7 +22,7 @@ def motor_control(command):
         motor_controller.carStop()  # Stop if no command
 
 
-# Main loop update to use the new avoid_obstacle_right method
+# Main loop update to handle obstacle avoidance and line-following
 if __name__ == '__main__':
     motor_controller = Urkab()
     line_follower = LineFollower(motor_control=motor_control)
@@ -35,7 +35,9 @@ if __name__ == '__main__':
 
     try:
         motor_controller.carDeactivateEmergencyStop()
+
         while True:
+            # Capture frame for line-following
             for frame in camera.capture_continuous(raw_capture, format="bgr", use_video_port=True):
                 image = frame.array
                 processed_frame = line_follower.process_frame(image)
@@ -44,13 +46,14 @@ if __name__ == '__main__':
                 dist = motor_controller.getUltrasonicDist()
                 print(f"Distance to obstacle: {dist}")
 
-                if dist < 10 and dist !=4 and dist != 3:  # Trigger obstacle avoidance if object is close
+                if dist < 15 and dist not in [4, 3]:  # If obstacle is close
                     print("Obstacle detected. Avoiding...")
-                    motor_controller.avoid_obstacle_right()
+                    motor_controller.avoid_obstacle_right()  # Avoid obstacle to the right
                 else:
-                    # Regular line-following
+                    # Regular line-following when no obstacle is detected
                     line_follower.direct_to_line()
 
+                # Show processed image with detected line
                 cv2.imshow("Line Following", processed_frame)
 
                 if cv2.waitKey(1) & 0xFF == ord('q'):
