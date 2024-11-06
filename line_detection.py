@@ -82,7 +82,7 @@ class LineFollower:
     def apply_control(self, motor_left, motor_right, urkab):
         """Direct the vehicle based on line position."""
         
-        threshold = 1  # Small threshold to account for minor deviations
+        threshold = 1.5  # Small threshold to account for minor deviations
         if abs(self.distance) <= threshold:
             print("Go straight")
             self.motor_control("straight")
