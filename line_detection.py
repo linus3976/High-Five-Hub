@@ -20,8 +20,9 @@ class LineFollower:
 
     def process_frame(self, frame):
         """Process a single frame (image) for line detection."""
+        logging.debug("Processing frame")
         h, w = frame.shape[:2]
-        logging.info(f"Width, Height: {w}, {h}")
+        #logging.debug(f" Image width, Height: {w}, {h}")
 
         # Apply Gaussian blur
         blur = cv2.blur(frame, (5, 5))
@@ -47,6 +48,7 @@ class LineFollower:
 
         if len(contours) == 0:
             # no line found
+            logging.warning("No line detected")
             return None
 
         # Keep only the largest contour
@@ -72,6 +74,7 @@ class LineFollower:
 
     def direct_to_line(self):
         """Direct the vehicle based on line position."""
+        logging.debug("Directing to line")
         threshold = 10  # Small threshold to account for minor deviations
         if abs(self.distance) <= threshold:
             logging.info("Go straight")
@@ -85,7 +88,8 @@ class LineFollower:
             
     def apply_control(self, motor_left, motor_right, urkab):
         """Direct the vehicle based on line position."""
-        
+
+        logging.debug("Applying control")
         threshold = 1.5  # Small threshold to account for minor deviations
         if abs(self.distance) <= threshold:
             logging.info("Go straight")

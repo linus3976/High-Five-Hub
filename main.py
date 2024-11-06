@@ -59,29 +59,32 @@ if __name__ == '__main__':
 
             # Re-found the line
             if turning_mode and lost_line and processed_frame is not None:
+                logging.debug("Re-found the line")
                 turning_mode = False
                 lost_line = False
 
 
             if processed_frame is None:
                 # No line detected, turn the car
+                logging.warning("No line detected, turning the car")
                 lost_line = True
                 motor_controller.carStop()
 
             if turning_mode:
+                logging.debug("Turning the car")
                 motor_controller.carTurnLeft(200, 200)
-                raw_capture.truncate(0)
                 cv2.imshow("Turning", image)
+                raw_capture.truncate(0)
                 continue
 
             # Direct the robot based on line detection results
+            logging.debug("Directing the robot, based on line detection results")
             motor_left, motor_right = PID_control.update(delta_time, line_follower.get_attributes())    #calculates control motor inputs
             line_follower.apply_control(motor_left, motor_right, motor_controller)
 
             current_time = time.perf_counter()
             delta_t = current_time - previous_time
             previous_time = current_time
-            #applies control
             
             #line_follower.direct_to_line()  # Calls motor_control with the appropriate command
 

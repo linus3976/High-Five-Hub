@@ -98,6 +98,7 @@ class Urkab():
 
 
     def carAdvance(self, v1, v2):
+        logging.debug(f"Advance: {v1}, {v2}")
         self.envoiCmdi(b'C', v1, v2, 0, 0)
 
 
