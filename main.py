@@ -24,6 +24,7 @@ def motor_control(command):
         motor_controller.carStop()  # Stop if no command
 
 if __name__ == '__main__':
+    logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG)
     # Initialize motor controller and line follower with motor control function
     motor_controller = Urkab()
     line_follower = LineFollower(motor_control=motor_control)
@@ -68,6 +69,7 @@ if __name__ == '__main__':
             if turning_mode:
                 motor_controller.carTurnLeft(200, 200)
                 raw_capture.truncate(0)
+                cv2.imshow("Turning", processed_frame)
                 continue
 
             # Direct the robot based on line detection results
