@@ -40,7 +40,8 @@ if __name__ == '__main__':
     sleep(0.1)  # Allow the camera to warm up
 
     try:
-        turning_mode, lost_line = False
+        turning_mode = False
+        lost_line = False
         # Capture frames continuously from the camera
         for frame in camera.capture_continuous(raw_capture, format="bgr", use_video_port=True):
             image = frame.array  # Get the current frame as an array
