@@ -1,3 +1,5 @@
+import logging
+
 import cv2
 import time
 
@@ -38,12 +40,33 @@ if __name__ == '__main__':
     sleep(0.1)  # Allow the camera to warm up
 
     try:
+        turning_mode, lost_line = False
         # Capture frames continuously from the camera
         for frame in camera.capture_continuous(raw_capture, format="bgr", use_video_port=True):
             image = frame.array  # Get the current frame as an array
 
             # Process the frame for line detection
             processed_frame = line_follower.process_frame(image)
+
+            ultrasonic_distance = motor_controller.getUltrasonicDist()
+            logging.info(f"Ultrasonic distance: {ultrasonic_distance}")
+            if ultrasonic_distance < 10:
+                turning_mode = True
+
+            # Refound the line
+            if turning_mode and lost_line and processed_frame:
+                turning_mode = False
+                lost_line = False
+
+
+            if not processed_frame:
+                # No line detected, turn the car
+                lost_line = True
+                turning_mode = True
+
+            if turning_mode:
+                motor_controller.carTurnLeft(200, 200)
+                continue
 
             # Direct the robot based on line detection results
             motor_left, motor_right = PID_control.update(delta_time, line_follower.get_attributes())    #calculates control motor inputs
