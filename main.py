@@ -69,7 +69,7 @@ if __name__ == '__main__':
             if turning_mode:
                 motor_controller.carTurnLeft(200, 200)
                 raw_capture.truncate(0)
-                cv2.imshow("Turning", processed_frame)
+                cv2.imshow("Turning", image)
                 continue
 
             # Direct the robot based on line detection results

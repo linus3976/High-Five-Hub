@@ -92,5 +92,5 @@ class LineFollower:
             self.motor_control("straight")
         else :
             urkab.carAdvance(motor_right, motor_left)
-            logging.info("Right: ", motor_right, " Left: ", motor_left)
+            logging.info(f"Right: {motor_right}, Left: {motor_left}")
             
