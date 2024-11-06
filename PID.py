@@ -42,8 +42,8 @@ class PIDController:
         output = p_term + i_term + d_term
         
         # Calculate motor speeds with output adjustment
-        left_motor_speed = int(max(0, min(255, self.base_speed - output)))
-        right_motor_speed = int(max(0, min(255, self.base_speed + output)))
+        left_motor_speed = int(max(0, min(255, self.base_speed + output)))
+        right_motor_speed = int(max(0, min(255, self.base_speed - output)))
         
         return left_motor_speed, right_motor_speed
 
