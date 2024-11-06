@@ -1,8 +1,12 @@
 import cv2
+import time
+
 from line_detection import LineFollower
 from car_lib import Urkab
 from picamera import PiCamera
 from picamera.array import PiRGBArray
+from PID import PIDController
+
 from time import sleep
 
 # Define the motor control function
@@ -21,6 +25,10 @@ if __name__ == '__main__':
     # Initialize motor controller and line follower with motor control function
     motor_controller = Urkab()
     line_follower = LineFollower(motor_control=motor_control)
+    PID_control = PIDController(3, 0.4, 1.2, 255, 0) # values: kp, ki, kd, base_speed, setpoint
+
+    previous_time = time.perf_counter()
+    delta_time = 0.1
 
     # Initialize the PiCamera
     camera = PiCamera()
@@ -38,7 +46,15 @@ if __name__ == '__main__':
             processed_frame = line_follower.process_frame(image)
 
             # Direct the robot based on line detection results
-            line_follower.direct_to_line()  # Calls motor_control with the appropriate command
+            motor_left, motor_right = PID_control.update(delta_time, line_follower.get_attributes())    #calculates control motor inputs
+            line_follower.apply_control(motor_left, motor_right, motor_controller)
+
+            current_time = time.perf_counter()
+            delta_t = current_time - previous_time
+            previous_time = current_time
+            #applies control
+            
+            #line_follower.direct_to_line()  # Calls motor_control with the appropriate command
 
             # Display the processed frame for visual feedback
             cv2.imshow("Line Following", processed_frame)
@@ -49,6 +65,7 @@ if __name__ == '__main__':
 
             # Clear the stream for the next frame
             raw_capture.truncate(0)
+
 
     finally:
         # Release resources and stop the car
