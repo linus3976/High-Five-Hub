@@ -53,6 +53,7 @@ if __name__ == '__main__':
 
             ultrasonic_distance = motor_controller.getUltrasonicDist()
             logging.info(f"Ultrasonic distance: {ultrasonic_distance}")
+            logging.debug(f"Turning mode: {turning_mode}, Lost line: {lost_line}")
             if ultrasonic_distance < 10:
                 turning_mode = True
 
