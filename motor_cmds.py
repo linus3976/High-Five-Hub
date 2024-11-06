@@ -114,7 +114,18 @@ class Urkab():
     def carTurnRight(self, v1, v2):
         self.envoiCmdi(b'C', -v1, v2, 0, 0)
 
+    def carDeactivateEmergencyStop(self):
+        self.arduino.write(b'I0')
+        self.AttAcquit()
+
+    def carResetEmergencyStop(self):
+        self.arduino.write(b'I1')
+        self.AttAcquit()
+
     def carDisconnect(self):
         self.arduino.write(b'a')  # deconnection de la carte
         self.arduino.close()  # fermeture de la liaison série
-        logging.info("Fin de programme")
+        logging.info("Arduino disconnected")
+
+    def __del__(self):
+        self.carDisconnect()
