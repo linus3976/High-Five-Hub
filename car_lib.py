@@ -76,9 +76,11 @@ class Urkab():
         rep = b''
         while rep == b'':
             rep = self.arduino.readline()
+        logging.debug(f"Acquitted response is: {rep}")
         try:
             decoded = rep.decode()
         except UnicodeDecodeError:
+            logging.debug("UnicodeDecodeError")
             # use hexadecimal decoding instead
             decoded = int(rep[0])
         logging.info(decoded)
