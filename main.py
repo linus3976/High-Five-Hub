@@ -65,7 +65,7 @@ if __name__ == '__main__':
             if processed_frame is None:
                 # No line detected, turn the car
                 lost_line = True
-                turning_mode = True
+                motor_controller.carStop()
 
             if turning_mode:
                 motor_controller.carTurnLeft(200, 200)
