@@ -33,6 +33,7 @@ if __name__ == '__main__':
 
     try:
         avoiding_obstacle = False
+        motor_controller.carDeactivateEmergencyStop()
         while True:
             # Check distance to obstacle
             dist = motor_controller.getUltrasonicDist()
