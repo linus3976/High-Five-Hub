@@ -1,7 +1,6 @@
 import cv2
 import numpy as np
 from PID import PIDController
-from motor_cmds import Urkab
 
 class LineFollower:
     def __init__(self, motor_control=None):
