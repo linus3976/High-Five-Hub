@@ -47,7 +47,7 @@ if __name__ == '__main__':
 
             # Process the frame for line detection
             processed_frame = line_follower.process_frame(image)
-            motor_controller.avoid_obstacles()
+            # motor_controller.avoid_obstacles()
             # Direct the robot based on line detection results
             motor_left, motor_right = PID_control.update(delta_time, line_follower.get_attributes())    #calculates control motor inputs
             line_follower.apply_control(motor_left, motor_right, motor_controller)
