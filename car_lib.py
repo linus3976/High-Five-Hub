@@ -146,7 +146,7 @@ class Urkab():
     def avoid_obstacles(self):
         d = self.getUltrasonicDist()
         print(f"Ultrasonic Values: {d}")
-        distace_to_stop = 25
+        distace_to_stop = 40
         if d < distace_to_stop:
             print("Car should stop here, entered the smaller than 15 if statement")
             self.carStop()
