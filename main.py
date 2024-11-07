@@ -87,6 +87,9 @@ if __name__ == '__main__':
             # Check for intersection
             if intersection_detected:
                 logging.info("Intersection detected!")
+                if DEBUG:
+                    motor_controller.carStop()
+                    sleep(1)  # Pause for 1 second
                 frames_without_intersection = 0  # Reset the no-intersection counter
             if (not intersection_detected) and previous_intersection:
                 logging.debug("No intersection detected.")
@@ -99,6 +102,9 @@ if __name__ == '__main__':
                     frames_without_intersection = 0  # Reset the counter
                     direction_index += 1  # Move to the next direction in dir_l
                     logging.info(f"Moving to direction_index {direction_index} in the itinerary.")
+                    if DEBUG:
+                        motor_controller.carStop()
+                        time.sleep(1)
                     motor_controller.executeDirection(dir_l[direction_index])
 
                     # If we've reached the end of the directions, stop the car
