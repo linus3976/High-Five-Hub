@@ -1,6 +1,9 @@
 import cv2
 import numpy as np
 import math
+from picamera.array import PiRGBArray
+from picamera import PiCamera
+import time
 
 def detect_intersections(image_path, angle_threshold=20, distance_threshold=10):
     # Step 1: Read the image
@@ -88,7 +91,38 @@ def detect_intersections(image_path, angle_threshold=20, distance_threshold=10):
 
     return intersections
 
-# Example usage
-image_path = 'photo_test.jpg'  # Update with your image path
-intersections = detect_intersections(image_path)
 
+if __name__ == "__main__":
+    # Initialize the Raspberry Pi camera
+    camera = PiCamera()
+    camera.resolution = (640, 480)
+    camera.framerate = 32
+    raw_capture = PiRGBArray(camera, size=(640, 480))
+
+    # Allow the camera to warm up
+    time.sleep(0.1)
+
+    # Capture frames from the Pi camera
+    for frame in camera.capture_continuous(raw_capture, format="bgr", use_video_port=True):
+        # Grab the image array from the frame
+        image = frame.array
+
+        # Save the current frame to a temporary image file to use with detect_intersections
+        temp_image_path = 'temp_frame.jpg'
+        cv2.imwrite(temp_image_path, image)
+
+        # Detect intersections in the current frame
+        intersections = detect_intersections(temp_image_path)
+
+        # Display the frame with intersections
+        cv2.imshow('Intersections', image)
+
+        # Break the loop when 'q' key is pressed
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+        # Clear the stream for the next frame
+        raw_capture.truncate(0)
+
+    # Close the display window
+    cv2.destroyAllWindows()

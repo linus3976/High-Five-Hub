@@ -154,6 +154,7 @@ class Urkab():
 
             # Turn until way is clear
             self.carTurnLeft(150, 150)
+
             while self.getUltrasonicDist() < (distace_to_stop + 7):
                 pass
 
@@ -172,6 +173,7 @@ class Urkab():
             logging.debug("refound object")
             while self.getUltrasonicDist() < (distace_to_stop + 7):
                 pass
+
             self.carStop()
             logging.debug("object lost")
 
@@ -182,8 +184,10 @@ class Urkab():
             # Turn ultrasonic to 70 (slightly right), turn until object is within field
             self.moveUltrasonic(60)
             self.carTurnRight(170, 170)
+
             while self.getUltrasonicDist() > (distace_to_stop + 7):
                 pass
+
             logging.debug("refound object on my right, now going to refind the line, wait 1 sec")
             self.carStop()
             # Go until line is found
