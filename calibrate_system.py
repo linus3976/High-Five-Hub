@@ -50,7 +50,7 @@ def calibrate_turning():
                 previous_intersection = False
                 lost_intersection = True
 
-            cv2.imshow("Camera feed", frame)
+            cv2.imshow("Camera feed", image)
         raw_capture.truncate(0)
 
     end_time = perf_counter()
