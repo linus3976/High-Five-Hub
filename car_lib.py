@@ -148,27 +148,41 @@ class Urkab():
         print(f"Ultrasonic Values: {d}")
         distace_to_stop = 40
         if d < distace_to_stop:
-            print("Car should stop here, entered the smaller than 15 if statement")
+            print(f"Car should stop here, entered the smaller than {distace_to_stop}")
             self.carStop()
             print("Car stopped")
-            # move ultrasonic to the right
-            # self.carTurnLeft(150, 150) # left
-            self.carAdvance(200, 150)
-            time.sleep(1)
+
+            # Turn until way is clear
+            self.carTurnLeft(150, 150)
+            while self.getUltrasonicDist() < (distace_to_stop+7):
+                pass
+            self.carStop()
+            time.sleep(2)
+            logging.debug("Car stopped, way should be clear")
+            # Turn ultrasonic to right, go until we find and then loose the object
             self.moveUltrasonic(0)
-
-            # Advance the car while the distance is smaller than 10
-            while self.getUltrasonicDist() < distace_to_stop:
-                print("Obstacle still close. Advancing slowly.")
-                self.carAdvance(200, 100)
-                time.sleep(0.1)  # Small delay to allow continuous checks of distance
-
-            # When the distance becomes greater than 10, start turning left
-            while self.getUltrasonicDist() >= distace_to_stop:
-                print("Obstacle not visible anymore. Turning right to go around.")
-                self.carTurnRight(150, 150)
-                time.sleep(0.1)  # Small delay to allow continuous checks of distance
-
+            self.carAdvance(150,150)
+            while self.getUltrasonicDist() > (distace_to_stop+7):
+                pass
+            logging.debug("refound object")
+            while self.getUltrasonicDist() < (distace_to_stop+7):
+                pass
+            logging.debug("object lost")
+            while self.getUltrasonicDist() > (distace_to_stop+7):
+                pass
+            logging.debug("object found again, wait 2 sec")
+            self.carStop()
+            time.sleep(2)
+            # Turn ultrasonic to 70 (slightly right), turn until object is within field
+            self.moveUltrasonic(70)
+            self.carTurnRight(150, 150)
+            while self.getUltrasonicDist() > (distace_to_stop+7):
+                pass
+            logging.debug("refound object on my right, now going to refind the line, wait 2 sec")
+            self.carStop()
+            time.sleep(2)
+            # go until line is found
+            self.carAdvance(150, 150)
 
 
     def __del__(self):
