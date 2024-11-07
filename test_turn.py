@@ -2,6 +2,8 @@ from car_lib import *
 import logging
 from time import sleep
 
+# We hate the encoders
+
 logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.DEBUG)
 # Initialize the Urkab
 logging.debug("Initializing Urkab...")
