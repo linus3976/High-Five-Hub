@@ -2,9 +2,10 @@ import cv2
 import numpy as np
 import math
 
-def detect_intersections(image_path, angle_threshold=20, distance_threshold=10):
+def detect_intersections(frame, angle_threshold=20, distance_threshold=10):
     # Step 1: Read the image
-    img = cv2.imread(image_path)
+    #img = cv2.imread(image_path)
+    img = frame
     if img is None:
         print(f"Error: Image at '{image_path}' could not be loaded.")
         return False  # Return False if the image cannot be loaded
