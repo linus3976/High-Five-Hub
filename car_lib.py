@@ -151,6 +151,8 @@ class Urkab():
             self.carStop()
             print("Car stopped")
             time.sleep(2)
+            # move ultrasonic to the left
+            self.moveUltrasonic(90)
 
             # Advance the car while the distance is smaller than 10
             while self.getUltrasonicDist() < 10:
