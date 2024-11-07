@@ -144,44 +144,53 @@ class Urkab():
         logging.info("Arduino disconnected")
 
     def avoid_obstacles(self):
-        distance_to_stop = 37
-        extended_distance = distance_to_stop + 10  # Additional buffer distance
-
         d = self.getUltrasonicDist()
         print(f"Ultrasonic Values: {d}")
-
-        if d < distance_to_stop:
-            print(f"Obstacle detected. Stopping the car.")
+        distace_to_stop = 37
+        if d < distace_to_stop:
+            print(f"Car should stop here, entered the smaller than {distace_to_stop}")
             self.carStop()
+            print("Car stopped")
 
-            # Step 1: Turn left slightly to begin bypassing the obstacle
-            self.carTurnLeft(120, 120)
-            while self.getUltrasonicDist() < extended_distance:
-                pass  # Turn left until the obstacle is no longer detected
+            # Turn until way is clear
+            self.carTurnLeft(150, 150)
+            while self.getUltrasonicDist() < (distace_to_stop+7):
+                pass
+
             self.carStop()
-            time.sleep(0.5)
+            time.sleep(1)
+            logging.debug("Car stopped, way should be clear")
+            # Turn ultrasonic to right, go until we find and then loose the object
+            self.moveUltrasonic(0)
+            self.carAdvance(150,150)
+            while self.getUltrasonicDist() > (distace_to_stop+7):
+                pass
+            self.carStop()
+            time.sleep(1)
+            self.carAdvance(150,150)
 
-            # Step 2: Advance forward slightly to ensure obstacle is passed
-            self.carAdvance(100, 100)
+            logging.debug("refound object")
+            while self.getUltrasonicDist() < (distace_to_stop+7):
+                pass
+            self.carStop()
+            time.sleep(1)
+            logging.debug("object lost")
+
+            self.carAdvance(150,150)
             time.sleep(1)
             self.carStop()
 
-            # Step 3: Turn the ultrasonic sensor to the right and look for the obstacle
-            self.moveUltrasonic(0)
-            self.carAdvance(120, 120)
-            while self.getUltrasonicDist() > extended_distance:
-                pass  # Move forward until the obstacle is found again
+            # Turn ultrasonic to 70 (slightly right), turn until object is within field
+            self.moveUltrasonic(45)
+            self.carTurnRight(150, 150)
+            while self.getUltrasonicDist() > (distace_to_stop+7):
+                pass
+            logging.debug("refound object on my right, now going to refind the line, wait 1 sec")
             self.carStop()
-            time.sleep(0.5)
-
-            # Step 4: Continue forward until the obstacle is completely bypassed
-            while self.getUltrasonicDist() < extended_distance:
-                self.carAdvance(120, 120)
-            self.carStop()
-
-            # Step 5: Readjust sensor and resume line-following path
+            time.sleep(1)
+            # go until line is found
+            self.carAdvance(150, 150)
             self.moveUltrasonic(90)
-            logging.debug("Obstacle bypassed. Resuming line-following.")
 
 
     def __del__(self):
