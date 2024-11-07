@@ -51,7 +51,7 @@ if __name__ == '__main__':
 
             # Check for obstacle detection and manage avoidance timing
             distance = motor_controller.getUltrasonicDist()
-            if distance < 37 and not avoiding_obstacle:
+            if distance < 40 and not avoiding_obstacle:
                 avoiding_obstacle = True
                 avoidance_start_time = time.perf_counter()
                 motor_controller.avoid_obstacles()
