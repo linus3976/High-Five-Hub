@@ -1,5 +1,6 @@
 import numpy as np
 from collections import deque
+import logging
 
 def grid_to_adjacency_matrix(N):
     # Initialize an empty adjacency matrix (N*N x N*N)
@@ -100,23 +101,25 @@ def dir_list_absolute(edge_list):
 
     for i in range (len(edge_list)):
         l.append(tuple(b - a for a, b in zip(edge_list[i][0], edge_list[i][1])))
+    logging.debug(f"List of absolute directions: {l}")
     return l
 
 def dir_list(dir_l, og_dir):
+    logging.debug(f"Starting translation of absolute directions to relative directions with initial direction: {og_dir}")
     # Define possible directions
     directions = {
-        (1, 0): "right",
-        (-1, 0): "left",
-        (0, 1): "up",
-        (0, -1): "down"
+        (0, 1): "abs_right",
+        (0, -1): "abs_left",
+        (1, 0): "abs_up",
+        (-1, 0): "abs_down"
     }
     
     # Define relative direction changes based on the current orientation
     turns = {
-        "up": {"up": "straight", "right": "right", "left": "left"},
-        "down": {"down": "straight", "right": "left", "left": "right"},
-        "right": {"right": "straight", "up": "left", "down": "right"},
-        "left": {"left": "straight", "up": "right", "down": "left"},
+        "abs_up": {"abs_up": "straight", "abs_right": "right", "abs_left": "left"},
+        "abs_down": {"abs_down": "straight", "abs_right": "left", "abs_left": "right"},
+        "abs_right": {"abs_right": "abs_straight", "abs_up": "left", "abs_down": "right"},
+        "abs_left": {"abs_left": "straight", "abs_up": "right", "abs_down": "left"},
     }
     
     # Convert og_dir tuple to string if necessary
@@ -132,7 +135,7 @@ def dir_list(dir_l, og_dir):
     relative_directions = []
 
     for move in dir_l:
-        # Get the absolute direction as a string (e.g., "right", "up")
+        # Get the absolute direction as a string (e.g., "abs_right", "abs_up")
         abs_dir = directions.get(move)
         if abs_dir is None:
             raise ValueError(f"Invalid move direction: {move}")
@@ -145,22 +148,6 @@ def dir_list(dir_l, og_dir):
         current_dir = abs_dir
     
     return relative_directions
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 """
 # Example Usage:
