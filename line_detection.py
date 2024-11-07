@@ -20,7 +20,7 @@ class LineFollower:
     def process_frame(self, frame):
         """Process a single frame (image) for line detection."""
         h, w = frame.shape[:2]
-        print("Width, Height:", w, h)
+        logging.debug(f"Width, Height: {w}, {h}")
 
         # Apply Gaussian blur
         blur = cv2.blur(frame, (5, 5))
@@ -42,7 +42,7 @@ class LineFollower:
 
         # Find contours
         contours, _ = cv2.findContours(dilated_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-        print("Number of contours detected:", len(contours))
+        logging.debug(f"Number of contours detected: {len(contours)}")
 
         # Keep only the largest contour
         contours = sorted(contours, key=cv2.contourArea, reverse=True)[:1]
@@ -54,14 +54,14 @@ class LineFollower:
             if M['m00'] != 0:
                 self.cx = int(M['m10'] / M['m00'])
                 self.cy = int(M['m01'] / M['m00'])
-                print("Centroid of the biggest area: ({}, {})".format(self.cx, self.cy))
+                logging.debug("Centroid of the biggest area: ({}, {})".format(self.cx, self.cy))
                 centroid = (self.cx, self.cy)
 
         # Calculate distance if centroid found
         if centroid is not None:
             center_x = w // 2
             self.distance = center_x - centroid[0]
-            print("Distance from center to centroid: {:.2f}".format(self.distance))
+            logging.debug("Distance from center to centroid: {:.2f}".format(self.distance))
 
         return frame
 
@@ -69,13 +69,13 @@ class LineFollower:
         """Direct the vehicle based on line position."""
         threshold = 10  # Small threshold to account for minor deviations
         if abs(self.distance) <= threshold:
-            print("Go straight")
+            logging.debug("Go straight")
             self.motor_control("straight")
         elif self.distance > 0:
-            print("Turn left")
+            logging.debug("Turn left")
             self.motor_control("left")
         else:
-            print("Turn right")
+            logging.debug("Turn right")
             self.motor_control("right")
             
     def apply_control(self, motor_left, motor_right, urkab):
@@ -83,9 +83,9 @@ class LineFollower:
         
         threshold = 1.5  # Small threshold to account for minor deviations
         if abs(self.distance) <= threshold:
-            print("Go straight")
+            logging.debug("Go straight")
             urkab.executeDirection("straight")
         else :
             urkab.carAdvance(motor_right, motor_left)
-            print("Right: ", motor_right, " Left: ", motor_left)
+            logging.debug(f"Applying motor values: Right: {motor_right}, Left: {motor_left}")
             
