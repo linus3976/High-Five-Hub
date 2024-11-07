@@ -30,6 +30,14 @@ class Urkab():
     def read_i32(self, f):
         return struct.unpack('<l', bytearray(f.read(4)))[0]
 
+    def recupCmdl(self, cmd):
+        arduino.write(cmd)
+        val1 = read_i32(arduino)
+        val2 = read_i32(arduino)
+        return val1, val2
+        self.AttAcquit()
+        #wtf this is USELESS
+
 
     def write_i16(self, f, value):
         f.write(struct.pack('<h', value))
