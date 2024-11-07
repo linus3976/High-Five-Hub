@@ -49,6 +49,10 @@ def calibrate_turning():
                 # Lost the intersection
                 previous_intersection = False
                 lost_intersection = True
+
+            cv2.imshow("Camera feed", frame)
+            raw_capture.truncate(0)
+
     end_time = perf_counter()
     urkab.carStop()
     return end_time - start_time
