@@ -130,6 +130,7 @@ class Urkab():
 
     def executeDirection(self, command):
         """Map direction commands to motor actions."""
+        logging.info(f"Executing direction: {command}")
         if command == "straight":
             self.carAdvance(250, 250)  # Move forward
         elif command == "left":

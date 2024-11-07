@@ -87,7 +87,7 @@ if __name__ == '__main__':
             intersection_detected = detect_intersections(image)
             # Check for intersection
             if intersection_detected:
-                logging.info("Intersection detected!")
+                if not previous_intersection: logging.info("Intersection detected!")
                 if DEBUG:
                     motor_controller.carStop()
                     sleep(0.5)  # Pause for 1 second
