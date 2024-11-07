@@ -49,6 +49,8 @@ if __name__ == '__main__':
             processed_frame = line_follower.process_frame(image)
             while motor_controller.getUltrasonicDist() < 37:
                 motor_controller.avoid_obstacles()
+                previous_time = time.perf_counter()
+                continue
             # Direct the robot based on line detection results
             motor_left, motor_right = PID_control.update(delta_time, line_follower.get_attributes())    #calculates control motor inputs
             line_follower.apply_control(motor_left, motor_right, motor_controller)
