@@ -1,15 +1,17 @@
 import RPi.GPIO as GPIO
 import time
 
+print("Ultrasonic sensor example, setting pins...")
 # Define GPIO pins
 URTRIG = 4  # Replace with your trigger pin number
 URPWM = 17  # Replace with your PWM (echo) pin number
 
 # Set up GPIO mode
+print("Setting up GPIO...")
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(URTRIG, GPIO.OUT)  # Set trigger pin as output
 GPIO.setup(URPWM, GPIO.IN)  # Set echo pin as input
-
+print("GPIO setup complete.")
 
 def ultrasonic_setup():
     # Set up the trigger pin
@@ -40,13 +42,17 @@ def ultrasonic_distance():
 
 
 # Run setup
+print("Running ultrasonic setup...")
 ultrasonic_setup()
+print("Setup complete.")
 
 # Example usage
 try:
     while True:
+        print("Reading distance...")
         dist = ultrasonic_distance()
         print("Distance:", dist, "cm")
         time.sleep(1)  # Delay between readings
 except KeyboardInterrupt:
+    print("Got Keyboard interrupt, exiting program.")
     GPIO.cleanup()  # Clean up GPIO on CTRL+C
