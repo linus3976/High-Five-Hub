@@ -34,9 +34,6 @@ def calibrate_turning():
         if intersection_detected:
             if not lost_intersection:
                 if not previous_intersection: logging.info("Intersection detected!")
-                if DEBUG:
-                    motor_controller.carStop()
-                    sleep(0.5)  # Pause for 1 second
                 frames_without_intersection = 0  # Reset the no-intersection counter
                 previous_intersection = True
             else:
