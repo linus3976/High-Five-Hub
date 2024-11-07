@@ -2,7 +2,23 @@ import cv2
 import numpy as np
 import math
 
+
+def calculate_angle(line1, line2):
+    """Calculate the angle between two lines in degrees."""
+    x1, y1, x2, y2 = line1
+    x3, y3, x4, y4 = line2
+    angle1 = math.atan2(y2 - y1, x2 - x1)
+    angle2 = math.atan2(y4 - y3, x4 - x3)
+    angle = abs(math.degrees(angle1 - angle2))
+    return min(angle, 180 - angle)
+
+
+def is_near_point(p1, p2, threshold):
+    """Check if two points are within a certain distance."""
+    return np.linalg.norm(np.array(p1) - np.array(p2)) < threshold
+
 def detect_intersections(frame, angle_threshold=20, distance_threshold=10):
+    logging.debug("Detecting intersections...")
     # Step 1: Convert the frame to grayscale
     img = frame
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -18,20 +34,8 @@ def detect_intersections(frame, angle_threshold=20, distance_threshold=10):
 
     intersection_found = False  # Variable to track if any intersections are found
 
-    def calculate_angle(line1, line2):
-        """Calculate the angle between two lines in degrees."""
-        x1, y1, x2, y2 = line1
-        x3, y3, x4, y4 = line2
-        angle1 = math.atan2(y2 - y1, x2 - x1)
-        angle2 = math.atan2(y4 - y3, x4 - x3)
-        angle = abs(math.degrees(angle1 - angle2))
-        return min(angle, 180 - angle)
-
-    def is_near_point(p1, p2, threshold):
-        """Check if two points are within a certain distance."""
-        return np.linalg.norm(np.array(p1) - np.array(p2)) < threshold
-
     if lines is not None:
+        logging.debug(f"Number of lines detected: {len(lines)}")
         # Step 5: Detect intersections
         for i in range(len(lines)):
             for j in range(i + 1, len(lines)):
@@ -72,9 +76,10 @@ def detect_intersections(frame, angle_threshold=20, distance_threshold=10):
                     # Intersection detected, mark it on the image
                     cv2.circle(img, intersection_point, 10, (0, 0, 255), -1)  # Draw red circle
                     intersection_found = True
+                    return True
 
     # Step 6: Save the modified image
-    cv2.imwrite('out_test.png', img)
+    #cv2.imwrite('out_test.png', img)
 
     # Return True if any intersections were found, otherwise False
     return intersection_found
