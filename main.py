@@ -58,10 +58,10 @@ if __name__ == '__main__':
             if ultrasonic_distance < 20:
                 turning_mode = True
 
-            # No line detected and not turning -> stop
-            if not white_line_detected and not turning_mode:
-                logging.warning("No line detected and no turning mode -> stop the car")
-                motor_controller.carStop()
+            # # No line detected and not turning -> stop
+            # if not white_line_detected and not turning_mode:
+            #     logging.warning("No line detected and no turning mode -> stop the car")
+            #     motor_controller.carStop()
 
             # line lost
             if turning_mode and not white_line_detected:
@@ -88,7 +88,7 @@ if __name__ == '__main__':
             line_follower.apply_control(motor_left, motor_right, motor_controller)
 
             current_time = time.perf_counter()
-            delta_t = current_time - previous_time
+            #delta_t = current_time - previous_time
             previous_time = current_time
             
             #line_follower.direct_to_line()  # Calls motor_control with the appropriate command
