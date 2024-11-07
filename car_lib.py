@@ -151,7 +151,6 @@ class Urkab():
             print("Car should stop here, entered the smaller than 15 if statement")
             self.carStop()
             print("Car stopped")
-            time.sleep(1)
             # move ultrasonic to the left
             self.carTurnLeft(0, 150)
             self.moveUltrasonic(0)
