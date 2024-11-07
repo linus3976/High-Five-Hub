@@ -76,6 +76,7 @@ if __name__ == '__main__':
     # Set the initial direction
     logging.debug(f"Starting initial positioning, direction is: {dir_l[direction_index]}")
     motor_controller.executeDirection(dir_l[direction_index])
+    direction_index += 1  # Move to the next direction in dir_l
     logging.debug(f"Should have oriented now... Amen.")
 
     try:
@@ -104,12 +105,14 @@ if __name__ == '__main__':
                 if frames_without_intersection >= 2:
                     previous_intersection = False
                     frames_without_intersection = 0  # Reset the counter
-                    direction_index += 1  # Move to the next direction in dir_l
                     logging.info(f"Moving to direction_index {direction_index} in the itinerary.")
                     if DEBUG:
                         motor_controller.carStop()
                         time.sleep(1)
                     motor_controller.executeDirection(dir_l[direction_index])
+
+
+                    direction_index += 1  # Move to the next direction in dir_l
 
                     # If we've reached the end of the directions, stop the car
                     if direction_index >= len(dir_l):
