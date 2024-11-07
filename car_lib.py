@@ -7,6 +7,7 @@ class Urkab():
 
     def __init__(self):
         self.arduino = serial.Serial(port='/dev/ttyACM0', baudrate=115200, timeout=0.1)
+        self.ultrasonicDist = 0
 
         rep = ' '  # serial connection validation
         while rep != b'':
@@ -131,7 +132,8 @@ class Urkab():
     def getUltrasonicDist(self):
         self.arduino.write(b's')
         resp = self.AttAcquit(intresp=True)
-        return int(resp)
+        self.ultrasonicDist = int(resp)
+        return self.ultrasonicDist
 
     def moveUltrasonic(self, angle):
         self.envoiCmdi(b'G', angle, 0, 0, 0)
@@ -140,6 +142,10 @@ class Urkab():
         self.arduino.write(b'a')  # deconnection de la carte
         self.arduino.close()  # fermeture de la liaison série
         logging.info("Arduino disconnected")
+
+    def avoid_obstacles(self):
+        if self.ultrasonicDist < 15:
+            self.carStop()
 
     def __del__(self):
         self.carDisconnect()
