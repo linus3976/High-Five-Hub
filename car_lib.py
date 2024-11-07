@@ -81,7 +81,7 @@ class Urkab():
             decoded = rep.decode()
         else:
             decoded = int(rep[0])
-        logging.info(f"Decoded word is: {decoded}, needs to be converted to int: {intresp}")
+        logging.debug(f"Decoded word is: {decoded}, needs to be converted to int: {intresp}")
         return decoded
 
 
