@@ -3,14 +3,9 @@ import numpy as np
 import math
 
 def detect_intersections(frame, angle_threshold=20, distance_threshold=10):
-    # Step 1: Read the image
-    #img = cv2.imread(image_path)
+    # Step 1: Convert the frame to grayscale
     img = frame
-    if img is None:
-        print(f"Error: Image at '{image_path}' could not be loaded.")
-        return False  # Return False if the image cannot be loaded
-    
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  # Convert to grayscale
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     # Step 2: Threshold the image to isolate white lines
     _, thresh = cv2.threshold(gray, 200, 255, cv2.THRESH_BINARY)

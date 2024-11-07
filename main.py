@@ -36,7 +36,7 @@ def parse_arguments():
     return args.size, tuple(args.start), tuple(args.end), tuple(args.dir_init)
 
 if __name__ == '__main__':
-    logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.INFO)
+    logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.DEBUG)
     # Parse arguments from the terminal
     size, start, end, dir_init = parse_arguments()
 
@@ -83,21 +83,26 @@ if __name__ == '__main__':
                 logging.info("Intersection detected!")
                 frames_without_intersection = 0  # Reset the no-intersection counter
             else:
+                logging.debug("No intersection detected.")
                 # If an intersection was previously detected but is now no longer visible
                 frames_without_intersection += 1  # Increment the no-intersection counter
+                logging.debug(f"Frames without intersection: {frames_without_intersection}")
 
                 # If we have two consecutive frames without detecting an intersection, proceed to the next direction
                 if frames_without_intersection >= 2:
                     intersection_detected = False  # Reset intersection detection flag
                     frames_without_intersection = 0  # Reset the counter
                     direction_index += 1  # Move to the next direction in dir_l
+                    logging.info(f"Moving to direction_index {direction_index} in the itinerary.")
 
                     # If we've reached the end of the directions, stop the car
                     if direction_index >= len(dir_l):
+                        logging.info("End of itinerary reached. Stopping the car.")
                         motor_controller.carStop()
                         break
                     else:
                         motor_control(dir_l[direction_index])  # Set the new direction
+                        logging.info(f"Moving in direction: {dir_l[direction_index]}")
 
             # Process the frame for line detection
             processed_frame = line_follower.process_frame(image)
