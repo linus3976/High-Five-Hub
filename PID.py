@@ -25,6 +25,8 @@ class PIDController:
         :param dt: Time difference between measurements (in seconds).
         :return: Tuple (left_motor_speed, right_motor_speed)
         """
+
+        logging.debug(f"Updating PID control with parameters dt={dt} and current_value={current_value}")
         # Calculate the error between the setpoint and the current value
         error = self.setpoint - current_value
         
