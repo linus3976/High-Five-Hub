@@ -158,12 +158,13 @@ class Urkab():
             return
         self.resetEncoders()
         logging.debug(f"Reset encoders, angle: {angle}")
-        time.sleep(0.1)
+        time.sleep(0.5)
         enc_val = self.getEncoders()[0]
-        logging.debug(f"Initial encoder value: {enc_val}")
+        logging.debug(f"Initial encoder value (should be 0): {enc_val}")
         while abs(enc_val) < FULL_TURN_ENCODER_VALUE / angle:
             enc_val = self.getEncoders()[0]
-            logging.debug(f"Encoder value: {enc_val}")
+            logging.debug(f"New encoder value: {enc_val}")
+        logging.debug("Done turning (got out of while)")
 
     def getUltrasonicDist(self):
         self.arduino.write(b's')
