@@ -81,7 +81,7 @@ class Urkab():
             decoded = rep.decode()
         else:
             decoded = int(rep[0])
-        logging.info(f"Decoded word is: {decoded}, needs to be converted to int: {intresp}")
+        logging.debug(f"Decoded word is: {decoded}, needs to be converted to int: {intresp}")
         return decoded
 
 
@@ -127,6 +127,23 @@ class Urkab():
     def carResetEmergencyStop(self):
         self.arduino.write(b'I1')
         self.AttAcquit()
+
+    def executeDirection(self, command):
+        """Map direction commands to motor actions."""
+        logging.info(f"Executing direction: {command}")
+        if command == "straight":
+            self.carAdvance(250, 250)  # Move forward
+        elif command == "left":
+            self.carTurnLeft(250, 250)  # Turn left
+            time.sleep(0.7)
+        elif command == "right":
+            self.carTurnRight(250, 250)  # Turn right
+            time.sleep(0.7)
+        elif command == "do_a_flip":
+            self.carTurnRight(250, 250)
+            time.sleep(1.2)
+        else:
+            self.carStop()  # Stop if no command
 
     def getUltrasonicDist(self):
         self.arduino.write(b's')
