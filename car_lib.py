@@ -3,6 +3,8 @@ import time
 import struct
 import logging
 
+FULL_TURN_ENCODER_VALUE = 1200
+
 class Urkab():
 
     def __init__(self):
@@ -141,13 +143,16 @@ class Urkab():
             self.carAdvance(250, 250)  # Move forward
         elif command == "left":
             self.carTurnLeft(250, 250)  # Turn left
-            time.sleep(0.7)
+            while abs(self.getEncoders()[0]) < FULL_TURN_ENCODER_VALUE/90:
+                pass
         elif command == "right":
             self.carTurnRight(250, 250)  # Turn right
-            time.sleep(0.7)
+            while abs(self.getEncoders()[0]) < FULL_TURN_ENCODER_VALUE / 90:
+                pass
         elif command == "do_a_flip":
             self.carTurnRight(250, 250)
-            time.sleep(1.2)
+            while abs(self.getEncoders()[0]) < FULL_TURN_ENCODER_VALUE / 180:
+                pass
         else:
             self.carStop()  # Stop if no command
 
