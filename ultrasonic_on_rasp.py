@@ -1,65 +1,52 @@
 import RPi.GPIO as GPIO
 import time
 
-# Define GPIO pins
-URTRIG = 4  # Trigger pin number
-URPWM = 17  # Echo pin number
+# Pin definitions
+URTRIG = 4  # Trigger pin (BCM GPIO number, adjust if needed)
+URPWM = 17   # Echo pin (BCM GPIO number, adjust if needed)
 
-# Set up GPIO mode
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(URTRIG, GPIO.OUT)  # Set trigger pin as output
-GPIO.setup(URPWM, GPIO.IN)  # Set echo pin as input
+# Setup function for the ultrasonic sensor
+def UltrasonicSetup():
+    GPIO.setmode(GPIO.BCM)            # Use BCM GPIO numbering
+    GPIO.setup(URTRIG, GPIO.OUT)      # Set trigger pin as output
+    GPIO.setup(URPWM, GPIO.IN)        # Set echo pin as input
+    GPIO.output(URTRIG, GPIO.HIGH)    # Initially set trigger pin to HIGH
 
-def ultrasonic_setup():
-    # Initialize the trigger pin
-    GPIO.output(URTRIG, GPIO.HIGH)
-
-def ultrasonic_distance():
+# Function to calculate the distance
+def UltrasonicDistance():
     # Trigger the ultrasonic sensor
     GPIO.output(URTRIG, GPIO.LOW)
-    time.sleep(0.000002)  # Short delay (2 microseconds)
-    GPIO.output(URTRIG, GPIO.HIGH)
-    time.sleep(0.00001)  # Send a 10us pulse to start reading
+    time.sleep(0.000002)              # Delay for 2 microseconds
+    GPIO.output(URTRIG, GPIO.HIGH)    # Send a short pulse
+    time.sleep(0.00001)               # 10 microseconds pulse
     GPIO.output(URTRIG, GPIO.LOW)
 
-    # Measure the duration of the pulse
+    # Wait for the echo to be received
     start_time = time.time()
-    timeout = start_time + 0.02  # 20ms timeout for waiting on pulse to start
+    while GPIO.input(URPWM) == 0:
+        start_time = time.time()      # Record the time of the rising edge
 
-    # Wait for the pulse to start
-    while GPIO.input(URPWM) == GPIO.HIGH:
-        start_time = time.time()
-        if time.time() > timeout:
-            print("Timeout: Pulse start not detected.")
-            return None  # Timeout condition
+    stop_time = time.time()
+    while GPIO.input(URPWM) == 1:
+        stop_time = time.time()       # Record the time of the falling edge
 
-    # Measure end time
-    end_time = time.time()
-    timeout = end_time + 0.02  # 20ms timeout for waiting on pulse to end
+    # Calculate the time difference
+    elapsed_time = stop_time - start_time
+    # Distance calculation: time (in seconds) * speed of sound (34300 cm/s) / 2
+    distance = (elapsed_time * 34300) / 2
 
-    while GPIO.input(URPWM) == GPIO.LOW:
-        end_time = time.time()
-        if time.time() > timeout:
-            print("Timeout: Pulse end not detected.")
-            return None  # Timeout condition
-
-    # Calculate distance based on the duration of the pulse
-    pulse_duration = end_time - start_time
-    distance = pulse_duration * 34300 / 2  # speed of sound is 34300 cm/s, divide by 2 for round-trip
-
-    return round(distance, 2)
-
-# Run setup
-ultrasonic_setup()
+    return distance
 
 # Example usage
 try:
+    UltrasonicSetup()
     while True:
-        distance = ultrasonic_distance()
-        if distance is not None:
-            print("Distance:", distance, "cm")
-        else:
-            print("Failed to read distance.")
-        time.sleep(1)  # Delay between readings
+        dist = UltrasonicDistance()
+        print(f"Distance: {dist:.2f} cm")
+        time.sleep(1)  # Wait a second between readings
+
 except KeyboardInterrupt:
-    GPIO.cleanup()  # Clean up GPIO on CTRL+C
+    print("Measurement stopped by user")
+
+finally:
+    GPIO.cleanup()  # Clean up the GPIO pins
