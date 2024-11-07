@@ -136,6 +136,17 @@ class Urkab():
     def moveUltrasonic(self, angle):
         self.envoiCmdi(b'G', angle, 0, 0, 0)
 
+    def executeDirection(self, direction):
+        """Map LineFollower commands to motor actions."""
+        if command == "straight":
+            self.carAdvance(200, 200)  # Move forward
+        elif command == "left":
+            self.carTurnLeft(150, 150)  # Turn left
+        elif command == "right":
+            self.carTurnRight(150, 150)  # Turn right
+        else:
+            self.carStop()
+
     def carDisconnect(self):
         self.arduino.write(b'a')  # deconnection de la carte
         self.arduino.close()  # fermeture de la liaison série

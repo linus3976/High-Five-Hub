@@ -12,17 +12,7 @@ from picamera.array import PiRGBArray
 from PID import PIDController
 from time import sleep
 
-# Define the motor control function
-def motor_control(command):
-    """Map LineFollower commands to motor actions."""
-    if command == "straight":
-        motor_controller.carAdvance(200, 200)  # Move forward
-    elif command == "left":
-        motor_controller.carTurnLeft(150, 150)  # Turn left
-    elif command == "right":
-        motor_controller.carTurnRight(150, 150)  # Turn right
-    else:
-        motor_controller.carStop()  # Stop if no command
+DEBUG = False
 
 def parse_arguments():
     """Parse command-line arguments for grid parameters."""
@@ -36,7 +26,10 @@ def parse_arguments():
     return args.size, tuple(args.start), tuple(args.end), tuple(args.dir_init)
 
 if __name__ == '__main__':
-    logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.DEBUG)
+    if DEBUG:
+        logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.DEBUG)
+    else:
+        logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.INFO)
     # Parse arguments from the terminal
     size, start, end, dir_init = parse_arguments()
 
@@ -62,6 +55,7 @@ if __name__ == '__main__':
 
     # Initialize intersection tracking
     intersection_detected = False
+    previous_intersection = False
     frames_without_intersection = 0  # Counter for consecutive frames without intersection
     direction_index = 0
 
@@ -82,7 +76,7 @@ if __name__ == '__main__':
             if intersection_detected:
                 logging.info("Intersection detected!")
                 frames_without_intersection = 0  # Reset the no-intersection counter
-            else:
+            if (not intersection_detected) and previous_intersection:
                 logging.debug("No intersection detected.")
                 # If an intersection was previously detected but is now no longer visible
                 frames_without_intersection += 1  # Increment the no-intersection counter
@@ -90,10 +84,10 @@ if __name__ == '__main__':
 
                 # If we have two consecutive frames without detecting an intersection, proceed to the next direction
                 if frames_without_intersection >= 2:
-                    intersection_detected = False  # Reset intersection detection flag
                     frames_without_intersection = 0  # Reset the counter
                     direction_index += 1  # Move to the next direction in dir_l
                     logging.info(f"Moving to direction_index {direction_index} in the itinerary.")
+                    motor_controller.executeDirection(dir_l[direction_index])
 
                     # If we've reached the end of the directions, stop the car
                     if direction_index >= len(dir_l):
@@ -103,6 +97,8 @@ if __name__ == '__main__':
                     else:
                         motor_control(dir_l[direction_index])  # Set the new direction
                         logging.info(f"Moving in direction: {dir_l[direction_index]}")
+
+            previous_intersection = intersection_detected
 
             # Process the frame for line detection
             processed_frame = line_follower.process_frame(image)
