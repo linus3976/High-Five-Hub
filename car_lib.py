@@ -72,12 +72,16 @@ class Urkab():
         AttAcquit()
 
 
-    def AttAcquit(self):
+    def AttAcquit(self, intresp=False):
         rep = b''
         while rep == b'':
             rep = self.arduino.readline()
-        decoded = rep.decode()
-        logging.info(decoded)
+        logging.debug(f"Acquitted response is: {rep}")
+        if not intresp:
+            decoded = rep.decode()
+        else:
+            decoded = int(rep[0])
+        logging.info(f"Decoded word is: {decoded}, needs to be converted to int: {intresp}")
         return decoded
 
 
@@ -126,7 +130,8 @@ class Urkab():
 
     def getUltrasonicDist(self):
         self.arduino.write(b's')
-        return int(self.AttAcquit())
+        resp = self.AttAcquit(intresp=True)
+        return int(resp)
 
     def moveUltrasonic(self, angle):
         self.envoiCmdi(b'G', angle, 0, 0, 0)
