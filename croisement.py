@@ -29,6 +29,7 @@ def detect_intersections(frame, angle_threshold=20, distance_threshold=10):
 
     # Step 3: Edge detection using Canny
     edges = cv2.Canny(thresh, 50, 150, apertureSize=3)
+    logging.debug(f"Edge detection complete, number of edges detected: {len(edges)}")
 
     # Step 4: Use Hough Line Transform to detect lines
     lines = cv2.HoughLinesP(edges, 1, np.pi / 180, threshold=150, minLineLength=80, maxLineGap=10)
