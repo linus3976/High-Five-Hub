@@ -1,4 +1,5 @@
 import time
+import logging
 
 class PIDController:
     def __init__(self, kp, ki, kd, base_speed, setpoint=0):
@@ -43,6 +44,8 @@ class PIDController:
         
         # Calculate the total control output
         output = p_term + i_term + d_term
+
+        logging.debug(f"PID values: p_term={p_term}, i_term={i_term}, d_term={d_term}, output={output}")
         
         # Calculate motor speeds with output adjustment
         left_motor_speed = int(max(0, min(255, self.base_speed + output)))

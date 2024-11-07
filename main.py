@@ -88,7 +88,7 @@ if __name__ == '__main__':
             line_follower.apply_control(motor_left, motor_right, motor_controller)
 
             current_time = time.perf_counter()
-            #delta_t = current_time - previous_time
+            delta_t = current_time - previous_time
             previous_time = current_time
             
             #line_follower.direct_to_line()  # Calls motor_control with the appropriate command
