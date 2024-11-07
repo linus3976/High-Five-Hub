@@ -109,7 +109,6 @@ if __name__ == '__main__':
                     if DEBUG:
                         motor_controller.carStop()
                         time.sleep(1)
-                    motor_controller.executeDirection(dir_l[direction_index])
 
                     # If we've reached the end of the directions, stop the car
                     if direction_index >= len(dir_l):
@@ -117,7 +116,7 @@ if __name__ == '__main__':
                         motor_controller.carStop()
                         break
                     else:
-                        motor_control(dir_l[direction_index])  # Set the new direction
+                        motor_controller.executeDirection(dir_l[direction_index])
                         logging.info(f"Moving in direction: {dir_l[direction_index]}")
 
 
