@@ -5,19 +5,18 @@ import numpy as np
 import math
 import cv2
 
-
-def detect_intersections(frame, angle_threshold=20, distance_threshold=10):
+def detect_intersections(frame, angle_threshold=20, distance_threshold=5):
     # Convert the frame to grayscale
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     # Threshold the image to isolate white lines
-    _, thresh = cv2.threshold(gray, 200, 255, cv2.THRESH_BINARY)
+    _, thresh = cv2.threshold(gray, 180, 255, cv2.THRESH_BINARY)
 
-    # Edge detection using Canny
-    edges = cv2.Canny(thresh, 50, 150, apertureSize=3)
+    # Edge detection using Canny with lower thresholds
+    edges = cv2.Canny(thresh, 30, 100, apertureSize=3)
 
-    # Use Hough Line Transform to detect lines
-    lines = cv2.HoughLinesP(edges, 1, np.pi / 180, threshold=150, minLineLength=80, maxLineGap=10)
+    # Use Hough Line Transform with adjusted parameters for low resolution
+    lines = cv2.HoughLinesP(edges, 1, np.pi / 180, threshold=50, minLineLength=20, maxLineGap=5)
 
     intersections = []  # List to store intersections
 
@@ -77,7 +76,7 @@ def detect_intersections(frame, angle_threshold=20, distance_threshold=10):
         # Mark intersections if found
         if intersections:
             for intersection in intersections:
-                cv2.circle(frame, intersection, 10, (0, 0, 255), -1)  # Draw red circle at intersections
+                cv2.circle(frame, intersection, 5, (0, 0, 255), -1)  # Draw red circle at intersections
             print(f'Found intersections at: {intersections}')
         else:
             print("No intersections detected.")
