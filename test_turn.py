@@ -12,6 +12,8 @@ logging.debug("Are the encoders working? Trying reset...")
 urkab.resetEncoders()
 logging.debug("Encoders reset.")
 
+sleep(1)
+
 logging.debug("Getting the current encoder values...")
 encoders = urkab.getEncoders()
 logging.debug(f"Encoder values: {encoders}")
