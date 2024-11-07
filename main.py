@@ -27,10 +27,11 @@ if __name__ == '__main__':
     logging.basicConfig(format='%(levelname)s - %(message)s', level=logging.DEBUG)
     motor_controller = Urkab()
     line_follower = LineFollower(motor_control=motor_control)
-    PID_control = PIDController(3, 0.4, 1.2, 255, 0) # values: kp, ki, kd, base_speed, setpoint
+    PID_control = PIDController(3, 0.4, 1.2, 255, 0)  # values: kp, ki, kd, base_speed, setpoint
 
     previous_time = time.perf_counter()
     delta_time = 0.1
+    avoiding_obstacle = False  # State variable to track if in obstacle avoidance mode
 
     # Initialize the PiCamera
     camera = PiCamera()
@@ -45,22 +46,22 @@ if __name__ == '__main__':
         for frame in camera.capture_continuous(raw_capture, format="bgr", use_video_port=True):
             image = frame.array  # Get the current frame as an array
 
-            # Process the frame for line detection
-            processed_frame = line_follower.process_frame(image)
-            while motor_controller.getUltrasonicDist() < 37:
-                motor_controller.avoid_obstacles()
-                previous_time = time.perf_counter()
-                continue
-            # Direct the robot based on line detection results
-            motor_left, motor_right = PID_control.update(delta_time, line_follower.get_attributes())    #calculates control motor inputs
-            line_follower.apply_control(motor_left, motor_right, motor_controller)
+            # Check for obstacle detection
+            if motor_controller.getUltrasonicDist() < 37:
+                if not avoiding_obstacle:
+                    avoiding_obstacle = True
+                    motor_controller.avoid_obstacles()
+            else:
+                if avoiding_obstacle:
+                    avoiding_obstacle = False
+                    motor_controller.carAdvance(200, 200)  # Resume moving forward
 
-            current_time = time.perf_counter()
-            delta_t = current_time - previous_time
-            previous_time = current_time
-            #applies control
-            
-            #line_follower.direct_to_line()  # Calls motor_control with the appropriate command
+                # Process the frame for line detection if not avoiding obstacles
+                processed_frame = line_follower.process_frame(image)
+
+                # Update the PID control
+                motor_left, motor_right = PID_control.update(delta_time, line_follower.get_attributes())
+                line_follower.apply_control(motor_left, motor_right, motor_controller)
 
             # Display the processed frame for visual feedback
             cv2.imshow("Line Following", processed_frame)
@@ -69,9 +70,13 @@ if __name__ == '__main__':
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
 
+            # Update timing for PID
+            current_time = time.perf_counter()
+            delta_time = current_time - previous_time
+            previous_time = current_time
+
             # Clear the stream for the next frame
             raw_capture.truncate(0)
-
 
     finally:
         # Release resources and stop the car
