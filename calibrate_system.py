@@ -72,8 +72,8 @@ def main():
     finally:
         # Release resources and stop the car
         cv2.destroyAllWindows()
-        motor_controller.carStop()
-        motor_controller.carDisconnect()
+        urkab.carStop()
+        urkab.carDisconnect()
 
 if __name__ == "__main__":
     main()
