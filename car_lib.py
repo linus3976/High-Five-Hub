@@ -165,12 +165,24 @@ class Urkab():
             self.carAdvance(150,150)
             while self.getUltrasonicDist() > (distace_to_stop+7):
                 pass
+            self.carStop()
+            time.sleep(1)
+            self.carAdvance(150,150)
+
             logging.debug("refound object")
             while self.getUltrasonicDist() < (distace_to_stop+7):
                 pass
+            self.carStop()
+            time.sleep(1)
+            self.carAdvance(150,150)
+
             logging.debug("object lost")
             while self.getUltrasonicDist() > (distace_to_stop+7):
                 pass
+            self.carStop()
+            time.sleep(1)
+            self.carAdvance(150,150)
+
             logging.debug("object found again, wait 1 sec")
             self.carStop()
             time.sleep(1)
