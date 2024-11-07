@@ -20,6 +20,7 @@ def ultrasonic_setup():
 
 def ultrasonic_distance():
     # Trigger the ultrasonic sensor
+    print("Triggering ultrasonic sensor...")
     GPIO.output(URTRIG, GPIO.LOW)
     time.sleep(0.000002)  # Short delay (2 microseconds)
     GPIO.output(URTRIG, GPIO.HIGH)
@@ -27,10 +28,13 @@ def ultrasonic_distance():
     GPIO.output(URTRIG, GPIO.LOW)
 
     # Measure the duration of the pulse
+    print("Measuring pulse duration...")
     start_time = time.time()
+    print("Waiting for pulse to start...")
     while GPIO.input(URPWM) == GPIO.HIGH:
         start_time = time.time()
 
+    print("Pulse detected, measuring end time...")
     while GPIO.input(URPWM) == GPIO.LOW:
         end_time = time.time()
 
