@@ -38,7 +38,7 @@ def remove_edge(adj_matrix, node1, node2):
     adj_matrix[index2][index1] = 0  # For an undirected graph
 
 
-def bfs_with_edges_from_matrix(adj_matrix, start, end, N):
+def bfs_with_edges_from_matrix(adj_matrix, start, end, N=5):
     # Map grid coordinates to matrix indices
     def node_to_index(r, c):
         return r * N + c

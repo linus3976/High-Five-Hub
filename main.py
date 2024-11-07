@@ -55,7 +55,7 @@ if __name__ == '__main__':
 
     # Initialize the itinerary
     g = grid_to_adjacency_matrix(size)
-    itin = bfs_with_edges_from_matrix(start, end, size)
+    itin = bfs_with_edges_from_matrix(g, start, end, size)
     dir_l = dir_list(dir_list_absolute(itin), dir_init)
 
     # Initialize intersection tracking
