@@ -32,19 +32,23 @@ if __name__ == '__main__':
     previous_time = time.perf_counter()
     delta_time = 0.1
 
+    logging.debug("Initializing Camera...")
     # Initialize the PiCamera
     camera = PiCamera()
     camera.resolution = (160, 128)
     camera.framerate = 32
     raw_capture = PiRGBArray(camera, size=camera.resolution)
     sleep(0.1)  # Allow the camera to warm up
+    logging.debug("Initialized Camera")
 
     try:
+        logging.debug("Started try")
         motor_controller.carDeactivateEmergencyStop()
         turning_mode = False
         lost_line = False
         # Capture frames continuously from the camera
         for frame in camera.capture_continuous(raw_capture, format="bgr", use_video_port=True):
+            logging.debug("--------- Got new frame ---------")
             image = frame.array  # Get the current frame as an array
 
             # Process the frame for line detection
