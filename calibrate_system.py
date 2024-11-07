@@ -62,3 +62,6 @@ def main():
     initilize()
     time_to_turn = calibrate_turning()
     print(f"Time to turn: {time_to_turn}")
+
+if __name__ == "__main__":
+    main()
