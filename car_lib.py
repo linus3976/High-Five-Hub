@@ -190,6 +190,7 @@ class Urkab():
             time.sleep(1)
             # go until line is found
             self.carAdvance(150, 150)
+            self.moveUltrasonic(90)
 
 
     def __del__(self):
