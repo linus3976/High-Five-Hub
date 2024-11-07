@@ -176,7 +176,7 @@ class Urkab():
             logging.debug("object lost")
 
             self.carAdvance(150, 150)
-            time.sleep(0.7)
+            time.sleep(1)
             self.carStop()
 
             # Turn ultrasonic to 70 (slightly right), turn until object is within field
