@@ -154,7 +154,7 @@ class Urkab():
             # move ultrasonic to the right
             # self.carTurnLeft(150, 150) # left
             self.carAdvance(200, 150)
-
+            time.sleep(1)
             self.moveUltrasonic(0)
 
             # Advance the car while the distance is smaller than 10
