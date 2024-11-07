@@ -47,6 +47,7 @@ if __name__ == '__main__':
 
     # Initialize motor controller and line follower with motor control function
     motor_controller = Urkab()
+    motor_controller.carDeactivateEmergencyStop()
     line_follower = LineFollower(motor_control=motor_control)
     PID_control = PIDController(3, 0.4, 1.2, 255, 0)  # values: kp, ki, kd, base_speed, setpoint
 
@@ -78,7 +79,6 @@ if __name__ == '__main__':
     logging.debug(f"Should have oriented now... Amen.")
 
     try:
-        motor_controller.carDeactivateEmergencyStop()
         
         # Capture frames continuously from the camera
         for frame in camera.capture_continuous(raw_capture, format="bgr", use_video_port=True):
