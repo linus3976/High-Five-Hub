@@ -132,13 +132,12 @@ class Urkab():
         """Map direction commands to motor actions."""
         if command == "straight":
             self.carAdvance(250, 250)  # Move forward
-            time.sleep(1)
         elif command == "left":
             self.carTurnLeft(250, 250)  # Turn left
-            time.sleep(2)
+            time.sleep(0.7)
         elif command == "right":
             self.carTurnRight(250, 250)  # Turn right
-            time.sleep(2)
+            time.sleep(0.7)
         else:
             self.carStop()  # Stop if no command
 
