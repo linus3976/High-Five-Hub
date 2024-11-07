@@ -73,14 +73,66 @@ def bfs_with_edges_from_matrix(adj_matrix, start, end, N):
     
     return []  # Return an empty list if no path found
 
+"""
+(1, 0) for right
+(-1, 0) for left
+(0, 1) for up
+(0, -1) for down
+"""
+
+#/!\ DO NOT MAKE IT START IN THE OPPOSITE DIRECTION IT'S SUPPOSED TO GO! (ie, putting it facing a white line will always do the trick)
+
 #We might want to implement this as a method in hindsight...
-def dir_list(edge_list):
+def dir_list_absolute(edge_list):
     l = []
 
     for i in range (len(edge_list)):
         l.append(tuple(b - a for a, b in zip(edge_list[i][0], edge_list[i][1])))
     return l
 
+def dir_list(dir_l, og_dir):
+    # Define possible directions
+    directions = {
+        (1, 0): "right",
+        (-1, 0): "left",
+        (0, 1): "up",
+        (0, -1): "down"
+    }
+    
+    # Define relative direction changes based on the current orientation
+    turns = {
+        "up": {"up": "straight", "right": "right", "left": "left"},
+        "down": {"down": "straight", "right": "left", "left": "right"},
+        "right": {"right": "straight", "up": "left", "down": "right"},
+        "left": {"left": "straight", "up": "right", "down": "left"},
+    }
+    
+    # Convert og_dir tuple to string if necessary
+    if isinstance(og_dir, tuple):
+        og_dir = directions.get(og_dir)
+    
+    # Ensure og_dir is now a valid string direction
+    if og_dir not in turns:
+        raise ValueError(f"Invalid initial direction: {og_dir}")
+
+    # Start with the initial facing direction
+    current_dir = og_dir
+    relative_directions = []
+
+    for move in dir_l:
+        # Get the absolute direction as a string (e.g., "right", "up")
+        abs_dir = directions.get(move)
+        if abs_dir is None:
+            raise ValueError(f"Invalid move direction: {move}")
+
+        # Determine the relative direction
+        relative_dir = turns[current_dir][abs_dir]
+        relative_directions.append(relative_dir)
+        
+        # Update the current direction to the new absolute direction
+        current_dir = abs_dir
+    
+    return relative_directions
 
 
 
@@ -98,7 +150,7 @@ def dir_list(edge_list):
 
 
 
-"""
+
 # Example Usage:
 N = 4  # Define grid size (e.g., 4x4 grid)
 adj_matrix = grid_to_adjacency_matrix(N)
@@ -116,8 +168,11 @@ for edge in edges_used:
     print(edge)
 
 #test de dir_list
-dir = dir_list(edges_used)
+dir = dir_list_absolute(edges_used)
 print("list of directions :")
 for d in dir:
     print(d)
-"""
+dir_rel = dir_list(dir, (1,0))
+print("list of relative directins : ")
+for d in dir_rel:
+    print(d)
