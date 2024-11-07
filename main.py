@@ -73,8 +73,9 @@ if __name__ == '__main__':
     direction_index = 0
 
     # Set the initial direction
-    #NOT SURE IF THIS IS ENOUGH OR NOT!!!
+    logging.debug(f"Starting initial positioning, direction is: {dir_l[direction_index]}")
     motor_controller.executeDirection(dir_l[direction_index])
+    logging.debug(f"Should have oriented now... Amen.")
 
     try:
         motor_controller.carDeactivateEmergencyStop()
