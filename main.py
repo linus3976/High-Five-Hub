@@ -12,6 +12,8 @@ from picamera.array import PiRGBArray
 from PID import PIDController
 from time import sleep
 
+DEBUG = False
+
 # Define the motor control function
 def motor_control(command):
     """Map LineFollower commands to motor actions."""
