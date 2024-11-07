@@ -163,8 +163,8 @@ class Urkab():
 
             # When the distance becomes greater than 10, start turning left
             while self.getUltrasonicDist() >= distace_to_stop:
-                print("Obstacle not visible anymore. Turning left to avoid.")
-                self.carTurnRight(150, 0)
+                print("Obstacle not visible anymore. Turning right to go around.")
+                self.carTurnRight(150, 150)
                 time.sleep(0.1)  # Small delay to allow continuous checks of distance
 
 
