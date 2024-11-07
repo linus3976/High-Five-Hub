@@ -46,10 +46,6 @@ class LineFollower:
         contours, _ = cv2.findContours(dilated_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
         logging.info(f"Number of contours detected: {len(contours)}")
 
-        if len(contours) == 0:
-            # no line found
-            logging.warning("No line detected")
-            return None
 
         # Keep only the largest contour
         contours = sorted(contours, key=cv2.contourArea, reverse=True)[:1]
@@ -70,7 +66,13 @@ class LineFollower:
             self.distance = center_x - centroid[0]
             logging.info("Distance from center to centroid: {:.2f}".format(self.distance))
 
-        return frame
+        if len(contours) == 0:
+            # no line found
+            logging.warning("No line detected")
+            return frame, False
+
+        else:
+            return frame, True
 
     def direct_to_line(self):
         """Direct the vehicle based on line position."""

@@ -1,5 +1,4 @@
 import logging
-
 import cv2
 import time
 
@@ -28,7 +27,7 @@ if __name__ == '__main__':
     # Initialize motor controller and line follower with motor control function
     motor_controller = Urkab()
     line_follower = LineFollower(motor_control=motor_control)
-    PID_control = PIDController(3, 0, 1.2, 255, 0) # values: kp, ki, kd, base_speed, setpoint
+    PID_control = PIDController(3, 0.4, 1.2, 230, 0) # values: kp, ki, kd, base_speed, setpoint
 
     previous_time = time.perf_counter()
     delta_time = 0.1
@@ -49,32 +48,38 @@ if __name__ == '__main__':
             image = frame.array  # Get the current frame as an array
 
             # Process the frame for line detection
-            processed_frame = line_follower.process_frame(image)
+            processed_frame, white_line_detected = line_follower.process_frame(image)
 
             ultrasonic_distance = motor_controller.getUltrasonicDist()
             logging.info(f"Ultrasonic distance: {ultrasonic_distance}")
             logging.debug(f"Turning mode: {turning_mode}, Lost line: {lost_line}")
-            if ultrasonic_distance < 10:
+
+
+            if ultrasonic_distance < 20:
                 turning_mode = True
 
+            # No line detected and not turning -> stop
+            if not white_line_detected and not turning_mode:
+                logging.warning("No line detected and no turning mode -> stop the car")
+                motor_controller.carStop()
+
+            # line lost
+            if turning_mode and not white_line_detected:
+                logging.debug("Line lost")
+                lost_line = True
+
             # Re-found the line
-            if turning_mode and lost_line and processed_frame is not None:
+            if turning_mode and white_line_detected and lost_line:
                 logging.debug("Re-found the line")
                 turning_mode = False
                 lost_line = False
 
-
-            if processed_frame is None:
-                # No line detected, turn the car
-                logging.warning("No line detected, turning the car")
-                lost_line = True
-                motor_controller.carStop()
-
             if turning_mode:
                 logging.debug("Turning the car")
                 motor_controller.carTurnLeft(200, 200)
-                cv2.imshow("Turning", image)
+                cv2.imshow("Turning", processed_frame)
                 raw_capture.truncate(0)
+                previous_time = time.perf_counter()
                 continue
 
             # Direct the robot based on line detection results
