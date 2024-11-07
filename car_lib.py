@@ -30,6 +30,7 @@ class Urkab():
 
 
     def read_i32(self, f):
+        logging.debug(f"Read i32, f: {f}")
         return struct.unpack('<l', bytearray(f.read(4)))[0]
 
 

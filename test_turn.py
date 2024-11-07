@@ -1,5 +1,6 @@
 from car_lib import *
 import logging
+from time import sleep
 
 logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.DEBUG)
 # Initialize the Urkab
