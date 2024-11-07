@@ -173,11 +173,10 @@ class Urkab():
             while self.getUltrasonicDist() < (distace_to_stop+7):
                 pass
             self.carStop()
-            time.sleep(1)
             logging.debug("object lost")
 
             self.carAdvance(150,150)
-            time.sleep(1)
+            time.sleep(0.7)
             self.carStop()
 
             # Turn ultrasonic to 70 (slightly right), turn until object is within field
@@ -187,7 +186,6 @@ class Urkab():
                 pass
             logging.debug("refound object on my right, now going to refind the line, wait 1 sec")
             self.carStop()
-            time.sleep(1)
             # go until line is found
             self.carAdvance(150, 150)
             self.moveUltrasonic(90)
