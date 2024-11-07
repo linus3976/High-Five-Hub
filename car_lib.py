@@ -16,6 +16,7 @@ class Urkab():
         time.sleep(2)
 
         self.arduino.write(b'A22')
+        time.sleep(0.2)
         rep = self.arduino.readline()
         if rep.split()[0] == b'OK':
             logging.info("Arduino connected")
