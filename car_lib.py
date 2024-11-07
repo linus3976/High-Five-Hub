@@ -128,8 +128,8 @@ class Urkab():
         self.arduino.write(b'I1')
         self.AttAcquit()
 
-    def executeDirection(self, cmd):
-        """Map LineFollower commands to motor actions."""
+    def executeDirection(self, command):
+        """Map direction commands to motor actions."""
         if command == "straight":
             motor_controller.carAdvance(200, 200)  # Move forward
             time.sleep(0.5)
