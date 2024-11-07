@@ -2,15 +2,6 @@ import numpy as np
 from collections import deque
 
 def grid_to_adjacency_matrix(N):
-    """
-    Converts a grid of size N x N into an adjacency matrix representing connections between neighboring nodes.
-    
-    Args:
-    - N (int): The size of the grid (N x N).
-    
-    Returns:
-    - adj_matrix (numpy.ndarray): The adjacency matrix representing the graph.
-    """
     # Initialize an empty adjacency matrix (N*N x N*N)
     adj_matrix = np.zeros((N*N, N*N), dtype=int)
     
@@ -37,19 +28,6 @@ def grid_to_adjacency_matrix(N):
 
 
 def bfs_with_edges_from_matrix(adj_matrix, start, end, N):
-    """
-    Perform BFS from the start node to the end node and return the edges used,
-    given an adjacency matrix representation of the graph.
-    
-    Args:
-    - adj_matrix (numpy.ndarray): The adjacency matrix of the graph.
-    - start (tuple): Starting node (r, c) tuple, e.g., (0, 0).
-    - end (tuple): Ending node (r, c) tuple, e.g., (3, 3).
-    - N (int): Size of the grid (N x N).
-    
-    Returns:
-    - path_edges (list): List of edges used to reach the target node from the start.
-    """
     # Map grid coordinates to matrix indices
     def node_to_index(r, c):
         return r * N + c
@@ -95,13 +73,39 @@ def bfs_with_edges_from_matrix(adj_matrix, start, end, N):
     
     return []  # Return an empty list if no path found
 
+#We might want to implement this as a method in hindsight...
+def dir_list(edge_list):
+    l = []
+
+    for i in range (len(edge_list)):
+        l.append(tuple(b - a for a, b in zip(edge_list[i][0], edge_list[i][1])))
+    return l
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"""
 # Example Usage:
 N = 4  # Define grid size (e.g., 4x4 grid)
 adj_matrix = grid_to_adjacency_matrix(N)
 
 # Define start and end nodes
-start_node = (0, 0)  # Starting node
-end_node = (3, 3)  # Ending node
+start_node = (3, 3)  # Starting node
+end_node = (0, 0)  # Ending node
 
 # Perform BFS and get the edges used to reach the target
 edges_used = bfs_with_edges_from_matrix(adj_matrix, start_node, end_node, N)
@@ -111,3 +115,9 @@ print("Edges used to reach the target node:")
 for edge in edges_used:
     print(edge)
 
+#test de dir_list
+dir = dir_list(edges_used)
+print("list of directions :")
+for d in dir:
+    print(d)
+"""
