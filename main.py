@@ -1,6 +1,7 @@
 import argparse
 import cv2
 import time
+import logging
 
 from graphe_go_brrrrr import *
 from croisement import detect_intersections  # Import intersection detection function
@@ -35,6 +36,7 @@ def parse_arguments():
     return args.size, tuple(args.start), tuple(args.end), tuple(args.dir_init)
 
 if __name__ == '__main__':
+    logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.INFO)
     # Parse arguments from the terminal
     size, start, end, dir_init = parse_arguments()
 
@@ -72,13 +74,15 @@ if __name__ == '__main__':
         
         # Capture frames continuously from the camera
         for frame in camera.capture_continuous(raw_capture, format="bgr", use_video_port=True):
+            logging.debug("----------Processing frame...----------")
             image = frame.array  # Get the current frame as an array
 
+            intersection_detected = detect_intersections(image)
             # Check for intersection
-            if detect_intersections(image):
-                intersection_detected = True
-                frames_without_intersection = 0  # Reset the no-intersection counter
             if intersection_detected:
+                logging.info("Intersection detected!")
+                frames_without_intersection = 0  # Reset the no-intersection counter
+            else:
                 # If an intersection was previously detected but is now no longer visible
                 frames_without_intersection += 1  # Increment the no-intersection counter
 
