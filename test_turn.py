@@ -7,6 +7,15 @@ logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.DEBUG)
 logging.debug("Initializing Urkab...")
 urkab = Urkab()
 
+
+logging.debug("Are the encoders working? Trying reset...")
+urkab.resetEncoders()
+logging.debug("Encoders reset.")
+
+logging.debug("Getting the current encoder values...")
+encoders = urkab.getEncoders()
+logging.debug(f"Encoder values: {encoders}")
+
 # Turn right
 logging.debug("Turning right...")
 urkab.executeDirection("right")
