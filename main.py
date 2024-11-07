@@ -78,7 +78,7 @@ if __name__ == '__main__':
             if detect_intersections(image):
                 intersection_detected = True
                 frames_without_intersection = 0  # Reset the no-intersection counter
-            elif intersection_detected:
+            if intersection_detected:
                 # If an intersection was previously detected but is now no longer visible
                 frames_without_intersection += 1  # Increment the no-intersection counter
 
