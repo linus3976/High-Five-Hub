@@ -3,7 +3,7 @@ import cv2
 import time
 
 from graphe_go_brrrrr import *
-from croisement import detect_intersections  # Import intersection detection function
+from detect/croisement import detect_intersections  # Import intersection detection function
 from line_detection import LineFollower
 from car_lib import Urkab
 from picamera import PiCamera
