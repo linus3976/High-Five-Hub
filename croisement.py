@@ -20,6 +20,7 @@ def is_near_point(p1, p2, threshold):
 
 def detect_intersections(frame, angle_threshold=20, distance_threshold=10):
     logging.debug("Detecting intersections...")
+    logging.debug(f"Type of frame: {type(frame)}")
     # Step 1: Convert the frame to grayscale
     img = frame
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
