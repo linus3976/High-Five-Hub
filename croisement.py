@@ -78,7 +78,8 @@ def detect_intersections(frame, angle_threshold=20, distance_threshold=10):
                     cv2.circle(img, intersection_point, 10, (0, 0, 255), -1)  # Draw red circle
                     intersection_found = True
                     return True
-
+    else:
+        logging.debug("No lines detected")
     # Step 6: Save the modified image
     #cv2.imwrite('out_test.png', img)
 
