@@ -1,26 +1,20 @@
-import cv2
-import numpy as np
-import math
 from picamera.array import PiRGBArray
 from picamera import PiCamera
 import time
+import cv2
 
-def detect_intersections(image_path, angle_threshold=20, distance_threshold=10):
-    # Step 1: Read the image
-    img = cv2.imread(image_path)
-    if img is None:
-        print(f"Error: Image at '{image_path}' could not be loaded.")
-        exit()  # Exit the program if the image cannot be loaded
-    
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  # Convert to grayscale
 
-    # Step 2: Threshold the image to isolate white lines
+def detect_intersections(frame, angle_threshold=20, distance_threshold=10):
+    # Convert the frame to grayscale
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+    # Threshold the image to isolate white lines
     _, thresh = cv2.threshold(gray, 200, 255, cv2.THRESH_BINARY)
 
-    # Step 3: Edge detection using Canny
+    # Edge detection using Canny
     edges = cv2.Canny(thresh, 50, 150, apertureSize=3)
 
-    # Step 4: Use Hough Line Transform to detect lines
+    # Use Hough Line Transform to detect lines
     lines = cv2.HoughLinesP(edges, 1, np.pi / 180, threshold=150, minLineLength=80, maxLineGap=10)
 
     intersections = []  # List to store intersections
@@ -39,7 +33,7 @@ def detect_intersections(image_path, angle_threshold=20, distance_threshold=10):
         return np.linalg.norm(np.array(p1) - np.array(p2)) < threshold
 
     if lines is not None:
-        # Step 5: Detect intersections
+        # Detect intersections
         for i in range(len(lines)):
             for j in range(i + 1, len(lines)):
                 line1 = lines[i][0]
@@ -78,16 +72,13 @@ def detect_intersections(image_path, angle_threshold=20, distance_threshold=10):
 
                     intersections.append(intersection_point)
 
-        # Step 6: Mark intersections if found
+        # Mark intersections if found
         if intersections:
             for intersection in intersections:
-                cv2.circle(img, intersection, 10, (0, 0, 255), -1)  # Draw red circle at intersections
+                cv2.circle(frame, intersection, 10, (0, 0, 255), -1)  # Draw red circle at intersections
             print(f'Found intersections at: {intersections}')
         else:
             print("No intersections detected.")
-
-    # Step 7: Save the modified image
-    cv2.imwrite('out_test.png', img)
 
     return intersections
 
@@ -107,12 +98,8 @@ if __name__ == "__main__":
         # Grab the image array from the frame
         image = frame.array
 
-        # Save the current frame to a temporary image file to use with detect_intersections
-        temp_image_path = 'temp_frame.jpg'
-        cv2.imwrite(temp_image_path, image)
-
-        # Detect intersections in the current frame
-        intersections = detect_intersections(temp_image_path)
+        # Detect intersections directly on the frame
+        intersections = detect_intersections(image)
 
         # Display the frame with intersections
         cv2.imshow('Intersections', image)
