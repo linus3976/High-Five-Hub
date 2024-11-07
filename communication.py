@@ -27,7 +27,15 @@ def request_command(socket):
 
 
 # Function to execute received commands
+# Initialize variables for vehicle state
+start_position = None  # Starting position
+end_position = None  # Ending position
+direction = None  # Direction the vehicle is facing
+
+
 def execute_command(command):
+    global start_position, end_position, direction
+
     if command == 'w':
         print("Moving forward")
         # Implement the motor control code here to move forward
@@ -40,6 +48,29 @@ def execute_command(command):
     elif command == 'd':
         print("Turning right")
         # Implement motor control for turning right
+    elif command.startswith('s '):  # 's x y' to set starting position
+        _, x, y = command.split()
+        start_position = (int(x), int(y))
+        print(f"Start position set to {start_position}")
+    elif command.startswith('e '):  # 'e x y' to set ending position
+        _, x, y = command.split()
+        end_position = (int(x), int(y))
+        print(f"End position set to {end_position}")
+    elif command == 'left':
+        direction = 'left'
+        print("Vehicle is now facing left")
+    elif command == 'right':
+        direction = 'right'
+        print("Vehicle is now facing right")
+    elif command == 'forward':
+        direction = 'forward'
+        print("Vehicle is now facing forward")
+    elif command == 'backward':
+        direction = 'backward'
+        print("Vehicle is now facing backward")
+    elif command == 'status':
+        # Report the current status
+        print(f"Start Position: {start_position}, End Position: {end_position}, Facing: {direction}")
     else:
         print("No action or unknown command")
 
