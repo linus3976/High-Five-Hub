@@ -132,8 +132,8 @@ class Urkab():
     def getUltrasonicDist(self):
         self.arduino.write(b's')
         resp = self.AttAcquit(intresp=True)
-        self.ultrasonicDist = int(resp)
-        return self.ultrasonicDist
+        d = int(resp)
+        return d
 
     def moveUltrasonic(self, angle):
         self.envoiCmdi(b'G', angle, 0, 0, 0)
@@ -144,8 +144,9 @@ class Urkab():
         logging.info("Arduino disconnected")
 
     def avoid_obstacles(self):
-        print(f"Ultrasonic Values: {self.ultrasonicDist}")
-        if self.ultrasonicDist < 15:
+        d = self.getUltrasonicDist()
+        print(f"Ultrasonic Values: {d}")
+        if d < 15:
             print("Car should stop here, entered the smaller than 15 if statement")
             self.carStop()
 
