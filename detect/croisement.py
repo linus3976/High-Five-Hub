@@ -90,7 +90,7 @@ if __name__ == "__main__":
     camera = PiCamera()
     camera.resolution = (160, 128)
     camera.framerate = 32
-    raw_capture = PiRGBArray(camera, size=(640, 480))
+    raw_capture = PiRGBArray(camera, size=(160, 128))
 
     # Allow the camera to warm up
     time.sleep(0.1)
