@@ -157,8 +157,10 @@ class Urkab():
             self.carStop()  # Stop if no command
             return
         self.resetEncoders()
+        logging.debug(f"Reset encoders, angle: {angle}")
         time.sleep(0.1)
         enc_val = self.getEncoders()[0]
+        logging.debug(f"Initial encoder value: {enc_val}")
         while abs(enc_val) < FULL_TURN_ENCODER_VALUE / angle:
             enc_val = self.getEncoders()[0]
             logging.debug(f"Encoder value: {enc_val}")
