@@ -142,6 +142,8 @@ if __name__ == '__main__':
 
             # Clear the stream for the next frame
             raw_capture.truncate(0)
+    except KeyboardInterrupt:
+        logging.info("Ending program...")
 
     finally:
         # Release resources and stop the car

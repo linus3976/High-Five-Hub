@@ -6,6 +6,7 @@ logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.DEBUG)
 # Initialize the Urkab
 logging.debug("Initializing Urkab...")
 urkab = Urkab()
+urkab.carDeactivateEmergencyStop()
 
 
 logging.debug("Are the encoders working? Trying reset...")
