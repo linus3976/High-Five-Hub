@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import logging
 from PID import PIDController
 
 class LineFollower:
