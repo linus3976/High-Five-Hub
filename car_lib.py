@@ -181,7 +181,7 @@ class Urkab():
             self.carStop()
 
             # Turn ultrasonic to 70 (slightly right), turn until object is within field
-            self.moveUltrasonic(70)
+            self.moveUltrasonic(45)
             self.carTurnRight(150, 150)
             while self.getUltrasonicDist() > (distace_to_stop+7):
                 pass
