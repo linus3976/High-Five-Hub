@@ -64,6 +64,7 @@ if __name__ == '__main__':
     g = grid_to_adjacency_matrix(size)
     itin = bfs_with_edges_from_matrix(g, start, end, size)
     dir_l = dir_list(dir_list_absolute(itin), dir_init)
+    logging.info(f"Initial itinerary: {dir_l}")
 
     # Initialize intersection tracking
     intersection_detected = False
@@ -89,8 +90,9 @@ if __name__ == '__main__':
                 logging.info("Intersection detected!")
                 if DEBUG:
                     motor_controller.carStop()
-                    sleep(1)  # Pause for 1 second
+                    sleep(0.5)  # Pause for 1 second
                 frames_without_intersection = 0  # Reset the no-intersection counter
+                previous_intersection = True
             if (not intersection_detected) and previous_intersection:
                 logging.debug("No intersection detected.")
                 # If an intersection was previously detected but is now no longer visible
@@ -99,6 +101,7 @@ if __name__ == '__main__':
 
                 # If we have two consecutive frames without detecting an intersection, proceed to the next direction
                 if frames_without_intersection >= 2:
+                    previous_intersection = False
                     frames_without_intersection = 0  # Reset the counter
                     direction_index += 1  # Move to the next direction in dir_l
                     logging.info(f"Moving to direction_index {direction_index} in the itinerary.")
@@ -116,7 +119,6 @@ if __name__ == '__main__':
                         motor_control(dir_l[direction_index])  # Set the new direction
                         logging.info(f"Moving in direction: {dir_l[direction_index]}")
 
-            previous_intersection = intersection_detected
 
             # Process the frame for line detection
             processed_frame = line_follower.process_frame(image)
