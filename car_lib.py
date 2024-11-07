@@ -139,23 +139,28 @@ class Urkab():
     def executeDirection(self, command):
         """Map direction commands to motor actions."""
         logging.info(f"Executing direction: {command}")
-        self.resetEncoders()
+        angle = 0
         if command == "straight":
             self.carAdvance(250, 250)  # Move forward
+            return
         elif command == "left":
             self.carTurnLeft(250, 250)  # Turn left
-            while abs(self.getEncoders()[0]) < FULL_TURN_ENCODER_VALUE/90:
-                pass
+            angle = 90
         elif command == "right":
             self.carTurnRight(250, 250)  # Turn right
-            while abs(self.getEncoders()[0]) < FULL_TURN_ENCODER_VALUE / 90:
-                pass
+            angle = 90
         elif command == "do_a_flip":
             self.carTurnRight(250, 250)
-            while abs(self.getEncoders()[0]) < FULL_TURN_ENCODER_VALUE / 180:
-                pass
+            angle = 180
         else:
             self.carStop()  # Stop if no command
+            return
+        self.resetEncoders()
+        time.sleep(0.1)
+        enc_val = self.getEncoders()[0]
+        while abs(enc_val) < FULL_TURN_ENCODER_VALUE / angle:
+            enc_val = self.getEncoders()[0]
+            logging.debug(f"Encoder value: {enc_val}")
 
     def getUltrasonicDist(self):
         self.arduino.write(b's')
