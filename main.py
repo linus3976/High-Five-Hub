@@ -49,6 +49,7 @@ if __name__ == '__main__':
     # Initialize motor controller and line follower with motor control function
     motor_controller = Urkab()
     if DEACT_EMERGENCY_STOP: motor_controller.carDeactivateEmergencyStop()
+    else: motor_controller.carResetEmergencyStop()
     line_follower = LineFollower(motor_control=motor_control)
     PID_control = PIDController(3, 0.4, 1.2, 255, 0)  # values: kp, ki, kd, base_speed, setpoint
 
