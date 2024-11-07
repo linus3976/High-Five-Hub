@@ -144,7 +144,9 @@ class Urkab():
         logging.info("Arduino disconnected")
 
     def avoid_obstacles(self):
+        print(f"Ultrasonic Values: {self.ultrasonicDist}")
         if self.ultrasonicDist < 15:
+            print("Car should stop here, entered the smaller than 15 if statement")
             self.carStop()
 
     def __del__(self):
