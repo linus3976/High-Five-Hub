@@ -36,7 +36,7 @@ class Urkab():
             return struct.unpack('<l', byte_arr)[0]
         except struct.error as e:
             logging.error(f"Error in struct.unpack: {e}")
-            return [0, 0, 0, 0]
+            return 0
 
 
     def write_i16(self, f, value):
