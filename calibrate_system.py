@@ -3,7 +3,7 @@ import cv2
 from picamera import PiCamera
 from picamera.array import PiRGBArray
 from croisement import detect_intersections
-from time import perf_counter
+from time import perf_counter, sleep
 
 def initilize():
     global camera, raw_capture, urkab, intersection_detected, previous_intersection, frames_without_intersection
