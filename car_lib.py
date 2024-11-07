@@ -139,9 +139,6 @@ class Urkab():
         elif command == "right":
             self.carTurnRight(250, 250)  # Turn right
             time.sleep(0.7)
-        elif command == "do_a_flip":
-            self.carTurnRight(250, 250)
-            time.sleep(1.2)
         else:
             self.carStop()  # Stop if no command
 

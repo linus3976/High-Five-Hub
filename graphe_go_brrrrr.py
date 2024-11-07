@@ -116,10 +116,10 @@ def dir_list(dir_l, og_dir):
     
     # Define relative direction changes based on the current orientation
     turns = {
-        "abs_up": {"abs_up": "straight", "abs_right": "right", "abs_left": "left", "abs_down": "do_a_flip"},
-        "abs_down": {"abs_down": "straight", "abs_right": "left", "abs_left": "right", "abs_up": "do_a_flip"},
-        "abs_right": {"abs_right": "abs_straight", "abs_up": "left", "abs_down": "right", "abs_left": "do_a_flip"},
-        "abs_left": {"abs_left": "straight", "abs_up": "right", "abs_down": "left", "abs_right": "do_a_flip"},
+        "abs_up": {"abs_up": "straight", "abs_right": "right", "abs_left": "left"},
+        "abs_down": {"abs_down": "straight", "abs_right": "left", "abs_left": "right"},
+        "abs_right": {"abs_right": "abs_straight", "abs_up": "left", "abs_down": "right"},
+        "abs_left": {"abs_left": "straight", "abs_up": "right", "abs_down": "left"},
     }
     
     # Convert og_dir tuple to string if necessary
