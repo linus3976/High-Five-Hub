@@ -81,6 +81,7 @@ def bfs_with_edges_from_matrix(adj_matrix, start, end, N):
 """
 
 #/!\ DO NOT MAKE IT START IN THE OPPOSITE DIRECTION IT'S SUPPOSED TO GO! (ie, putting it facing a white line will always do the trick)
+#/!\ The first direction returned NEEDS to be done before moving forward
 
 #We might want to implement this as a method in hindsight...
 def dir_list_absolute(edge_list):
@@ -150,7 +151,7 @@ def dir_list(dir_l, og_dir):
 
 
 
-
+"""
 # Example Usage:
 N = 4  # Define grid size (e.g., 4x4 grid)
 adj_matrix = grid_to_adjacency_matrix(N)
@@ -176,3 +177,4 @@ dir_rel = dir_list(dir, (1,0))
 print("list of relative directins : ")
 for d in dir_rel:
     print(d)
+"""
