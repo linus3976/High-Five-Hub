@@ -158,7 +158,7 @@ class Urkab():
             return
         self.resetEncoders()
         logging.debug(f"Reset encoders, angle: {angle}")
-        time.sleep(0.5)
+        time.sleep(1)
         enc_val = self.getEncoders()[0]
         logging.debug(f"Initial encoder value (should be 0): {enc_val}")
         while abs(enc_val) < FULL_TURN_ENCODER_VALUE / angle:
