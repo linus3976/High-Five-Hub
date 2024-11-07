@@ -85,8 +85,13 @@ class Urkab():
         return decoded
 
 
-    def resetENC(self):
+    def resetEncoders(self):
         self.envoiCmdi(b'B', 0, 0, 0, 0)
+
+
+    def getEncoders(self):
+        enc1, enc2 = recupCmdl(b'N')
+        return enc1, enc2
 
 
     def carStop(self):
