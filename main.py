@@ -55,8 +55,8 @@ if __name__ == '__main__':
             processed_frame, white_line_detected = line_follower.process_frame(image)
 
             #ultrasonic_distance = motor_controller.getUltrasonicDist()
-            logging.info(f"Ultrasonic distance: {ultrasonic_distance}")
-            logging.debug(f"Turning mode: {turning_mode}, Lost line: {lost_line}")
+            #logging.info(f"Ultrasonic distance: {ultrasonic_distance}")
+            #logging.debug(f"Turning mode: {turning_mode}, Lost line: {lost_line}")
 
 
             # if ultrasonic_distance < 20:
