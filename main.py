@@ -87,13 +87,14 @@ if __name__ == '__main__':
             #     continue
 
             # Direct the robot based on line detection results
+            current_time = time.perf_counter()
+            delta_time = current_time - previous_time
+            previous_time = current_time
+
             logging.debug("Directing the robot, based on line detection results")
             motor_left, motor_right = PID_control.update(delta_time, line_follower.get_attributes())    #calculates control motor inputs
             line_follower.apply_control(motor_left, motor_right, motor_controller)
 
-            current_time = time.perf_counter()
-            delta_t = current_time - previous_time
-            previous_time = current_time
             
             #line_follower.direct_to_line()  # Calls motor_control with the appropriate command
 
