@@ -154,7 +154,7 @@ class Urkab():
 
             # Turn until way is clear
             self.carTurnLeft(150, 150)
-            while self.getUltrasonicDist() < (distace_to_stop+7):
+            while self.getUltrasonicDist() < (distace_to_stop + 7):
                 pass
 
             self.carStop()
@@ -162,35 +162,34 @@ class Urkab():
             logging.debug("Car stopped, way should be clear")
             # Turn ultrasonic to right, go until we find and then loose the object
             self.moveUltrasonic(0)
-            self.carAdvance(150,150)
-            while self.getUltrasonicDist() > (distace_to_stop+7):
+            self.carAdvance(150, 150)
+            while self.getUltrasonicDist() > (distace_to_stop + 7):
                 pass
             self.carStop()
             time.sleep(1)
-            self.carAdvance(150,150)
+            self.carAdvance(150, 150)
 
             logging.debug("refound object")
-            while self.getUltrasonicDist() < (distace_to_stop+7):
+            while self.getUltrasonicDist() < (distace_to_stop + 7):
                 pass
             self.carStop()
             logging.debug("object lost")
 
-            self.carAdvance(150,150)
+            self.carAdvance(150, 150)
             time.sleep(0.7)
             self.carStop()
 
             # Turn ultrasonic to 70 (slightly right), turn until object is within field
             self.moveUltrasonic(60)
             self.carTurnRight(200, 200)
-            while self.getUltrasonicDist() > (distace_to_stop+7):
+            while self.getUltrasonicDist() > (distace_to_stop + 7):
                 pass
             logging.debug("refound object on my right, now going to refind the line, wait 1 sec")
             self.carStop()
-            # go until line is found
+            # Go until line is found
             self.carAdvance(150, 150)
             time.sleep(0.1)
             self.moveUltrasonic(90)
-
 
     def __del__(self):
         self.carDisconnect()

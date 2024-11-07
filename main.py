@@ -22,6 +22,7 @@ def motor_control(command):
     else:
         motor_controller.carStop()  # Stop if no command
 
+# Main control loop
 if __name__ == '__main__':
     # Initialize motor controller and line follower with motor control function
     logging.basicConfig(format='%(levelname)s - %(message)s', level=logging.DEBUG)
