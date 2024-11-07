@@ -181,7 +181,7 @@ class Urkab():
 
             # Turn ultrasonic to 70 (slightly right), turn until object is within field
             self.moveUltrasonic(60)
-            self.carTurnRight(150, 150)
+            self.carTurnRight(200, 200)
             while self.getUltrasonicDist() > (distace_to_stop+7):
                 pass
             logging.debug("refound object on my right, now going to refind the line, wait 1 sec")
