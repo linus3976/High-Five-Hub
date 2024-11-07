@@ -84,7 +84,7 @@ class LineFollower:
         threshold = 1.5  # Small threshold to account for minor deviations
         if abs(self.distance) <= threshold:
             print("Go straight")
-            self.motor_control("straight")
+            urkab.executeDirection("straight")
         else :
             urkab.carAdvance(motor_right, motor_left)
             print("Right: ", motor_right, " Left: ", motor_left)
