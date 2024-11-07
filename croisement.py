@@ -1,45 +1,42 @@
-import cv2
+from picamera.array import PiRGBArray
+from picamera import PiCamera
+import logging
+import time
 import numpy as np
 import math
-import logging
+import cv2
 
-
-def calculate_angle(line1, line2):
-    """Calculate the angle between two lines in degrees."""
-    x1, y1, x2, y2 = line1
-    x3, y3, x4, y4 = line2
-    angle1 = math.atan2(y2 - y1, x2 - x1)
-    angle2 = math.atan2(y4 - y3, x4 - x3)
-    angle = abs(math.degrees(angle1 - angle2))
-    return min(angle, 180 - angle)
-
-
-def is_near_point(p1, p2, threshold):
-    """Check if two points are within a certain distance."""
-    return np.linalg.norm(np.array(p1) - np.array(p2)) < threshold
-
-def detect_intersections(frame, angle_threshold=20, distance_threshold=10):
+def detect_intersections(frame, angle_threshold=20, distance_threshold=5):
     logging.debug("Detecting intersections...")
-    logging.debug(f"Type of frame: {type(frame)}")
-    # Step 1: Convert the frame to grayscale
-    img = frame
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    # Convert the frame to grayscale
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-    # Step 2: Threshold the image to isolate white lines
-    _, thresh = cv2.threshold(gray, 200, 255, cv2.THRESH_BINARY)
+    # Threshold the image to isolate white lines
+    _, thresh = cv2.threshold(gray, 180, 255, cv2.THRESH_BINARY)
 
-    # Step 3: Edge detection using Canny
-    edges = cv2.Canny(thresh, 50, 150, apertureSize=3)
-    logging.debug(f"Edge detection complete, number of edges detected: {len(edges)}")
+    # Edge detection using Canny with lower thresholds
+    edges = cv2.Canny(thresh, 30, 100, apertureSize=3)
 
-    # Step 4: Use Hough Line Transform to detect lines
-    lines = cv2.HoughLinesP(edges, 1, np.pi / 180, threshold=150, minLineLength=80, maxLineGap=10)
+    # Use Hough Line Transform with adjusted parameters for low resolution
+    lines = cv2.HoughLinesP(edges, 1, np.pi / 180, threshold=50, minLineLength=20, maxLineGap=5)
 
-    intersection_found = False  # Variable to track if any intersections are found
+    intersections = []  # List to store intersections
+
+    def calculate_angle(line1, line2):
+        """Calculate the angle between two lines in degrees."""
+        x1, y1, x2, y2 = line1
+        x3, y3, x4, y4 = line2
+        angle1 = math.atan2(y2 - y1, x2 - x1)
+        angle2 = math.atan2(y4 - y3, x4 - x3)
+        angle = abs(math.degrees(angle1 - angle2))
+        return min(angle, 180 - angle)
+
+    def is_near_point(p1, p2, threshold):
+        """Check if two points are within a certain distance."""
+        return np.linalg.norm(np.array(p1) - np.array(p2)) < threshold
 
     if lines is not None:
-        logging.debug(f"Number of lines detected: {len(lines)}")
-        # Step 5: Detect intersections
+        # Detect intersections
         for i in range(len(lines)):
             for j in range(i + 1, len(lines)):
                 line1 = lines[i][0]
@@ -76,15 +73,46 @@ def detect_intersections(frame, angle_threshold=20, distance_threshold=10):
                         is_near_point(intersection_point, (x4, y4), distance_threshold)):
                         continue  # Ignore if too close to any endpoint
 
-                    # Intersection detected, mark it on the image
-                    cv2.circle(img, intersection_point, 10, (0, 0, 255), -1)  # Draw red circle
-                    intersection_found = True
-                    return True
-    else:
-        logging.debug("No lines detected")
-    # Step 6: Save the modified image
-    #cv2.imwrite('out_test.png', img)
+                    intersections.append(intersection_point)
 
-    # Return True if any intersections were found, otherwise False
-    return intersection_found
+        # Mark intersections if found
+        if intersections:
+            for intersection in intersections:
+                cv2.circle(frame, intersection, 5, (0, 0, 255), -1)  # Draw red circle at intersections
+            logging.info(f'Found intersection')
+        else:
+            logging.debug("No intersections detected.")
 
+    return intersections
+
+
+if __name__ == "__main__":
+    # Initialize the Raspberry Pi camera
+    camera = PiCamera()
+    camera.resolution = (160, 128)
+    camera.framerate = 32
+    raw_capture = PiRGBArray(camera, size=(160, 128))
+
+    # Allow the camera to warm up
+    time.sleep(0.1)
+
+    # Capture frames from the Pi camera
+    for frame in camera.capture_continuous(raw_capture, format="bgr", use_video_port=True):
+        # Grab the image array from the frame
+        image = frame.array
+
+        # Detect intersections directly on the frame
+        intersections = detect_intersections(image)
+
+        # Display the frame with intersections
+        cv2.imshow('Intersections', image)
+
+        # Break the loop when 'q' key is pressed
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+        # Clear the stream for the next frame
+        raw_capture.truncate(0)
+
+    # Close the display window
+    cv2.destroyAllWindows()
