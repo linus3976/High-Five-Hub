@@ -188,6 +188,7 @@ class Urkab():
             self.carStop()
             # go until line is found
             self.carAdvance(150, 150)
+            time.sleep(0.7)
             self.moveUltrasonic(90)
 
 
