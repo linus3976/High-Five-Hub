@@ -32,6 +32,8 @@ if __name__ == '__main__':
     previous_time = time.perf_counter()
     delta_time = 0.1
     avoiding_obstacle = False  # State variable to track if in obstacle avoidance mode
+    avoidance_start_time = None
+    obstacle_avoidance_duration = 1.5  # Duration to avoid the obstacle (seconds)
 
     # Initialize the PiCamera
     camera = PiCamera()
@@ -46,34 +48,38 @@ if __name__ == '__main__':
         for frame in camera.capture_continuous(raw_capture, format="bgr", use_video_port=True):
             image = frame.array  # Get the current frame as an array
 
-            # Check for obstacle detection
-            if motor_controller.getUltrasonicDist() < 37:
-                if not avoiding_obstacle:
-                    avoiding_obstacle = True
-                    motor_controller.avoid_obstacles()
-            else:
-                if avoiding_obstacle:
+            # Check for obstacle detection and manage avoidance timing
+            distance = motor_controller.getUltrasonicDist()
+            if distance < 37 and not avoiding_obstacle:
+                avoiding_obstacle = True
+                avoidance_start_time = time.perf_counter()
+                motor_controller.avoid_obstacles()
+            elif avoiding_obstacle:
+                # If still avoiding, check if the avoidance time has expired
+                if (time.perf_counter() - avoidance_start_time) > obstacle_avoidance_duration:
                     avoiding_obstacle = False
                     motor_controller.carAdvance(200, 200)  # Resume moving forward
 
-                # Process the frame for line detection if not avoiding obstacles
+            # Run line following if not avoiding obstacles
+            if not avoiding_obstacle:
+                # Process the frame for line detection
                 processed_frame = line_follower.process_frame(image)
 
-                # Update the PID control
+                # Update the PID control based on line position
                 motor_left, motor_right = PID_control.update(delta_time, line_follower.get_attributes())
                 line_follower.apply_control(motor_left, motor_right, motor_controller)
 
-            # Display the processed frame for visual feedback
-            cv2.imshow("Line Following", processed_frame)
-
-            # Press 'q' to quit the loop early
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+                # Display the processed frame for visual feedback
+                cv2.imshow("Line Following", processed_frame)
 
             # Update timing for PID
             current_time = time.perf_counter()
             delta_time = current_time - previous_time
             previous_time = current_time
+
+            # Press 'q' to quit the loop early
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
 
             # Clear the stream for the next frame
             raw_capture.truncate(0)
