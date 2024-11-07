@@ -152,7 +152,9 @@ class Urkab():
             self.carStop()
             print("Car stopped")
             # move ultrasonic to the right
-            self.carTurnLeft(100, 150) # left
+            # self.carTurnLeft(150, 150) # left
+            self.carAdvance(200, 150)
+
             self.moveUltrasonic(0)
 
             # Advance the car while the distance is smaller than 10
