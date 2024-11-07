@@ -13,6 +13,7 @@ from PID import PIDController
 from time import sleep
 
 DEBUG = False
+DEACT_EMERGENCY_STOP = False
 
 # Define the motor control function
 def motor_control(command):
@@ -47,7 +48,7 @@ if __name__ == '__main__':
 
     # Initialize motor controller and line follower with motor control function
     motor_controller = Urkab()
-    motor_controller.carDeactivateEmergencyStop()
+    if DEACT_EMERGENCY_STOP: motor_controller.carDeactivateEmergencyStop()
     line_follower = LineFollower(motor_control=motor_control)
     PID_control = PIDController(3, 0.4, 1.2, 255, 0)  # values: kp, ki, kd, base_speed, setpoint
 
