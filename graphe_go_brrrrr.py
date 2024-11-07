@@ -26,6 +26,17 @@ def grid_to_adjacency_matrix(N):
                 
     return adj_matrix
 
+def remove_edge(adj_matrix, node1, node2):
+    def node_to_index(r, c, N):
+        return r * N + c
+    
+    N = int(np.sqrt(adj_matrix.shape[0]))  # Assuming adj_matrix is square of N*N x N*N
+    
+    index1 = node_to_index(*node1, N)
+    index2 = node_to_index(*node2, N)
+    adj_matrix[index1][index2] = 0
+    adj_matrix[index2][index1] = 0  # For an undirected graph
+
 
 def bfs_with_edges_from_matrix(adj_matrix, start, end, N):
     # Map grid coordinates to matrix indices
