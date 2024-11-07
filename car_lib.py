@@ -146,7 +146,7 @@ class Urkab():
     def avoid_obstacles(self):
         d = self.getUltrasonicDist()
         print(f"Ultrasonic Values: {d}")
-        distace_to_stop = 34
+        distace_to_stop = 37
         if d < distace_to_stop:
             print(f"Car should stop here, entered the smaller than {distace_to_stop}")
             self.carStop()
@@ -174,18 +174,8 @@ class Urkab():
                 pass
             self.carStop()
             time.sleep(1)
-            self.carAdvance(150,150)
-
             logging.debug("object lost")
-            while self.getUltrasonicDist() > (distace_to_stop+7):
-                pass
-            self.carStop()
-            time.sleep(1)
-            self.carAdvance(150,150)
 
-            logging.debug("object found again, wait 1 sec")
-            self.carStop()
-            time.sleep(1)
             # Turn ultrasonic to 70 (slightly right), turn until object is within field
             self.moveUltrasonic(70)
             self.carTurnRight(150, 150)
