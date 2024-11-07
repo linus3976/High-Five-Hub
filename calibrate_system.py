@@ -51,7 +51,7 @@ def calibrate_turning():
                 lost_intersection = True
 
             cv2.imshow("Camera feed", frame)
-            raw_capture.truncate(0)
+        raw_capture.truncate(0)
 
     end_time = perf_counter()
     urkab.carStop()
@@ -71,9 +71,12 @@ def main():
         exit()
     finally:
         # Release resources and stop the car
-        cv2.destroyAllWindows()
-        urkab.carStop()
-        urkab.carDisconnect()
+        try:
+            cv2.destroyAllWindows()
+            urkab.carStop()
+            urkab.carDisconnect()
+        except serial.serialutil.PortNotOpenError:
+            pass
 
 if __name__ == "__main__":
     main()
