@@ -7,7 +7,7 @@ def detect_intersections(image_path, angle_threshold=20, distance_threshold=10):
     img = cv2.imread(image_path)
     if img is None:
         print(f"Error: Image at '{image_path}' could not be loaded.")
-        exit()  # Exit the program if the image cannot be loaded
+        return False  # Return False if the image cannot be loaded
     
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  # Convert to grayscale
 
@@ -20,7 +20,7 @@ def detect_intersections(image_path, angle_threshold=20, distance_threshold=10):
     # Step 4: Use Hough Line Transform to detect lines
     lines = cv2.HoughLinesP(edges, 1, np.pi / 180, threshold=150, minLineLength=80, maxLineGap=10)
 
-    intersections = []  # List to store intersections
+    intersection_found = False  # Variable to track if any intersections are found
 
     def calculate_angle(line1, line2):
         """Calculate the angle between two lines in degrees."""
@@ -73,22 +73,13 @@ def detect_intersections(image_path, angle_threshold=20, distance_threshold=10):
                         is_near_point(intersection_point, (x4, y4), distance_threshold)):
                         continue  # Ignore if too close to any endpoint
 
-                    intersections.append(intersection_point)
+                    # Intersection detected, mark it on the image
+                    cv2.circle(img, intersection_point, 10, (0, 0, 255), -1)  # Draw red circle
+                    intersection_found = True
 
-        # Step 6: Mark intersections if found
-        if intersections:
-            for intersection in intersections:
-                cv2.circle(img, intersection, 10, (0, 0, 255), -1)  # Draw red circle at intersections
-            print(f'Found intersections at: {intersections}')
-        else:
-            print("No intersections detected.")
-
-    # Step 7: Save the modified image
+    # Step 6: Save the modified image
     cv2.imwrite('out_test.png', img)
 
-    return intersections
-
-# Example usage
-image_path = 'photo_test.jpg'  # Update with your image path
-intersections = detect_intersections(image_path)
+    # Return True if any intersections were found, otherwise False
+    return intersection_found
 
