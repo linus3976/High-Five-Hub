@@ -1,5 +1,6 @@
 import cv2
 import time
+import logging
 
 from line_detection import LineFollower
 from car_lib import Urkab
@@ -23,6 +24,7 @@ def motor_control(command):
 
 if __name__ == '__main__':
     # Initialize motor controller and line follower with motor control function
+    logging.basicConfig(format='%(levelname)s - %(message)s', level=logging.DEBUG)
     motor_controller = Urkab()
     line_follower = LineFollower(motor_control=motor_control)
     PID_control = PIDController(3, 0.4, 1.2, 255, 0) # values: kp, ki, kd, base_speed, setpoint
