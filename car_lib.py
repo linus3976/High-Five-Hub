@@ -146,7 +146,8 @@ class Urkab():
     def avoid_obstacles(self):
         d = self.getUltrasonicDist()
         print(f"Ultrasonic Values: {d}")
-        if d < 15:
+        distace_to_stop = 25
+        if d < distace_to_stop:
             print("Car should stop here, entered the smaller than 15 if statement")
             self.carStop()
             print("Car stopped")
@@ -155,13 +156,13 @@ class Urkab():
             self.moveUltrasonic(90)
 
             # Advance the car while the distance is smaller than 10
-            while self.getUltrasonicDist() < 15:
+            while self.getUltrasonicDist() < distace_to_stop:
                 print("Obstacle still close. Advancing slowly.")
                 self.carAdvance(150, 75)
                 time.sleep(0.1)  # Small delay to allow continuous checks of distance
 
             # When the distance becomes greater than 10, start turning left
-            while self.getUltrasonicDist() >= 15:
+            while self.getUltrasonicDist() >= distace_to_stop:
                 print("Obstacle cleared. Turning left to avoid.")
                 self.carTurnLeft(0, 150)
                 time.sleep(0.1)  # Small delay to allow continuous checks of distance
