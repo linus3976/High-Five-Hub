@@ -88,7 +88,7 @@ def detect_intersections(frame, angle_threshold=20, distance_threshold=10):
 if __name__ == "__main__":
     # Initialize the Raspberry Pi camera
     camera = PiCamera()
-    camera.resolution = (640, 480)
+    camera.resolution = (160, 128)
     camera.framerate = 32
     raw_capture = PiRGBArray(camera, size=(640, 480))
 
