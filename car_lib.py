@@ -149,6 +149,8 @@ class Urkab():
         if d < 15:
             print("Car should stop here, entered the smaller than 15 if statement")
             self.carStop()
+            print("Car stopped")
+            time.sleep(2)
 
     def __del__(self):
         self.carDisconnect()
