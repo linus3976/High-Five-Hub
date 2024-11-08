@@ -100,7 +100,7 @@ def go_somewhere(size, start, end, dir_init, urkab, line_follower, PID_control, 
     sleep(0.1)  # Allow the camera to warm up
 
     # Initialize the itinerary
-    if g == None: g = grid_to_adjacency_matrix(size)
+    if g is None: g = grid_to_adjacency_matrix(size)
     itin = bfs_with_edges_from_matrix(g, start, end, size)
     absolute_path = dir_list_absolute(itin)
     dir_l = dir_list(absolute_path, dir_init)
