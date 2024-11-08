@@ -12,7 +12,7 @@ from picamera.array import PiRGBArray
 from PID import PIDController
 from time import sleep
 
-DEBUG = True
+DEBUG = False
 USE_ARGS = False
 DEACT_EMERGENCY_STOP = False
 
