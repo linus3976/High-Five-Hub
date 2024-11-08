@@ -189,7 +189,9 @@ def go_somewhere(size, start, end, dir_init, urkab, line_follower, PID_control):
         was_going_to_intersection = itin[direction_index]
         logging.debug(f"Was going to intersection: {was_going_to_intersection}")
         facing_direction = (was_going_to_intersection[0] - last_taken_intersection[0], was_going_to_intersection[1] - last_taken_intersection[1])
+        print("Before camer close")
         camera.close()
+        print("After camera close")
         skip_cleanup = True
         print(f"Calling with size {size}, was_going_to_intersection {was_going_to_intersection}, last_taken_intersection {last_taken_intersection}, facing_direction {facing_direction}")
         return go_somewhere(size, was_going_to_intersection, last_taken_intersection, facing_direction, urkab, line_follower, PID_control)
