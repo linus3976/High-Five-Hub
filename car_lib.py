@@ -5,6 +5,12 @@ import logging
 
 class Urkab():
 
+    class ObstacleException(Exception):
+        logging.warning("Obstacle detected!")
+
+    class ObstacleOnWayException(Exception):
+        logging.warning("Obstacle detected on the way I'm going!")
+
     def __init__(self):
         self.arduino = serial.Serial(port='/dev/ttyACM0', baudrate=115200, timeout=0.1)
 
@@ -80,8 +86,7 @@ class Urkab():
 
         if rep.startswith(b"OB"):  # Check for obstacle-related messages
             error_message = rep.decode().strip()  # Decode the response and strip whitespace
-            logging.error(f"Obstacle detected: {error_message}")
-            raise Exception(f"Obstacle detected: {error_message}")
+            raise ObstacleException(f"Obstacle detected: {error_message}")
 
         if not intresp:
             decoded = rep.decode()
@@ -141,12 +146,10 @@ class Urkab():
         # Check for obstacles on the opposite side before executing a turn
         if command == "left":
             if self.checkObstacle(180):  # Check right side (0 degrees) before turning left
-                logging.error("Obstacle detected on the right; cannot turn left.")
-                return "Error: Obstacle detected on the right"
+                raise self.ObstacleOnWayException("Obstacle detected on the left; cannot turn left.")
         elif command == "right":
             if self.checkObstacle(0):  # Check left side (180 degrees) before turning right
-                logging.error("Obstacle detected on the left; cannot turn right.")
-                return "Error: Obstacle detected on the left"
+                raise self.ObstacleOnWayException("Obstacle detected on the right; cannot turn right.")
 
         # Proceed with command if no obstacle is detected on the opposite side
         if command == "straight":
