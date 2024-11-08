@@ -91,6 +91,7 @@ def initialize():
     return size, start, end, dir_init, urkab, line_follower, PID_control
 
 def go_somewhere(size, start, end, dir_init, urkab, line_follower, PID_control):
+    logging.debug(f"Called go_somewhere with size {size}, start {start}, end {end}, dir_init {dir_init}")
     previous_time = time.perf_counter()
     delta_time = 0.1
 
@@ -185,16 +186,19 @@ def go_somewhere(size, start, end, dir_init, urkab, line_follower, PID_control):
     finally:
         camera.close()
         current_abs_dir = absolute_path[direction_index-1]
-        logging.info(f"Current absolute direction after finishing go_somewhere: {current_abs_dir}")
+        logging.info(f"Arrived! Current absolute direction after finishing go_somewhere: {current_abs_dir}")
         return current_abs_dir
 
 if __name__ == '__main__':
     try:
         size, start, end, dir_init, urkab, line_follower, PID_control = initialize()
+        logging.info("Starting to goooooo...")
         current_dir = go_somewhere(size, start, end, dir_init, urkab, line_follower, PID_control)
         while True:
             go_again, new_end = prompt_user_again()
+            logging.debug(f"Am I going again? {go_again}, new end is: {new_end}")
             if go_again:
+                start = end
                 end = new_end
                 current_dir = go_somewhere(size, start, end, current_dir, urkab, line_follower, PID_control)
             else:
