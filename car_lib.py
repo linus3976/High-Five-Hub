@@ -11,7 +11,7 @@ try:
     load_dotenv(env_file_path)
 
     # Access the variable
-    TURNING_CONST = os.getenv("TIME_TO_TURN")
+    TURNING_CONST = float(os.getenv("TIME_TO_TURN"))
     logging.debug(f"The value of TIME_TO_TURN is: {TURNING_CONST}")
 except ValueError:
     TURNING_CONST = 2.8
