@@ -13,7 +13,7 @@ from PID import PIDController
 from time import sleep
 
 DEBUG = False
-DEACT_EMERGENCY_STOP = False
+DEACT_EMERGENCY_STOP = True
 
 # Define the motor control function
 def motor_control(command):
