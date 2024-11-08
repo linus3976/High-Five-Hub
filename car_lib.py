@@ -100,6 +100,24 @@ class Urkab():
     def carAdvance(self, v1, v2):
         self.envoiCmdi(b'C', v1, v2, 0, 0)
 
+    def AttAcquit(self, intresp=False):
+        rep = b''
+        while rep == b'':
+            rep = self.arduino.readline()
+        logging.debug(f"Acquitted response is: {rep}")
+
+        if rep.startswith(b"OB"):  # Check for obstacle-related messages
+            error_message = rep.decode().strip()  # Decode the response and strip whitespace
+            logging.error(f"Obstacle detected: {error_message}")
+            raise Exception(f"Obstacle detected: {error_message}")
+
+        if not intresp:
+            decoded = rep.decode()
+        else:
+            decoded = int(rep[0])
+
+        logging.debug(f"Decoded word is: {decoded}, needs to be converted to int: {intresp}")
+        return decoded
 
     def carAdvanceS(self, v1, v2, v3):
         self.envoiCmdi(b'D', v1, v2, v3, 0)
