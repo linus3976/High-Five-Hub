@@ -12,7 +12,7 @@ from picamera.array import PiRGBArray
 from PID import PIDController
 from time import sleep
 
-DEBUG = False
+DEBUG = True
 USE_ARGS = False
 DEACT_EMERGENCY_STOP = False
 
@@ -45,12 +45,12 @@ def get_user_input():
     """Prompt the user for grid parameters."""
     size = int(input("Enter the size of the grid (N): "))
 
-    start_x = float(input("Enter the starting X coordinate: "))
-    start_y = float(input("Enter the starting Y coordinate: "))
+    start_x = int(input("Enter the starting X coordinate: "))
+    start_y = int(input("Enter the starting Y coordinate: "))
     start = (start_x, start_y)
 
-    end_x = float(input("Enter the ending X coordinate: "))
-    end_y = float(input("Enter the ending Y coordinate: "))
+    end_x = int(input("Enter the ending X coordinate: "))
+    end_y = int(input("Enter the ending Y coordinate: "))
     end = (end_x, end_y)
 
     dir_init_x = int(input("Enter the initial direction X component: "))
@@ -62,8 +62,8 @@ def get_user_input():
 #getting the input if the user wants to ga again
 def prompt_user_again():
     if bool(input("Do you want to go somewhere else? [True/False]")):
-        end_x = float(input("Enter the ending X coordinates: "))
-        end_y = float(input("Enter the ending Y coordinates: "))
+        end_x = int(input("Enter the ending X coordinates: "))
+        end_y = int(input("Enter the ending Y coordinates: "))
         end = end_x, end_y
         return True, end
     else:
