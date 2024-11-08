@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import logging
 from PID import PIDController
-
+import time
 
 class LineFollower:
     def __init__(self, motor_control=None):
