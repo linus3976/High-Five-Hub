@@ -104,7 +104,8 @@ def go_somewhere(size, start, end, dir_init, urkab, line_follower, PID_control):
     # Initialize the itinerary
     g = grid_to_adjacency_matrix(size)
     itin = bfs_with_edges_from_matrix(g, start, end, size)
-    dir_l = dir_list(dir_list_absolute(itin), dir_init)
+    absolute_path = dir_list_absolute(itin)
+    dir_l = dir_list(absolute_path, dir_init)
     logging.info(f"Initial itinerary: {dir_l}")
 
     # Initialize intersection tracking
@@ -182,15 +183,21 @@ def go_somewhere(size, start, end, dir_init, urkab, line_follower, PID_control):
             raw_capture.truncate(0)
 
     finally:
-        current_dir = None #TO DO asap
-
-
+        current_abs_dir = absolute_path[direction_index-1]
+        logging.info(f"Current absolute direction after finishing go_somewhere: {current_abs_dir}")
+        return current_abs_dir
 
 if __name__ == '__main__':
     try:
         size, start, end, dir_init, urkab, line_follower, PID_control = initialize()
-        go_somewhere(size, start, end, dir_init, urkab, line_follower, PID_control)
+        current_dir = go_somewhere(size, start, end, dir_init, urkab, line_follower, PID_control)
         while True:
+            go_again, new_end = prompt_user_again()
+            if go_again:
+                end = new_end
+                current_dir = go_somewhere(size, start, end, current_dir, urkab, line_follower, PID_control)
+            else:
+                break
 
     except KeyboardInterrupt:
         urkab.carStop()
