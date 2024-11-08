@@ -71,10 +71,6 @@ def prompt_user_again():
         return False, (0.0,0.0)
 
 def initialize():
-    if DEBUG:
-        logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.DEBUG)
-    else:
-        logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.INFO)
     if USE_ARGS:
         # Parse arguments from the terminal
         size, start, end, dir_init = parse_arguments()
@@ -204,6 +200,10 @@ def go_somewhere(size, start, end, dir_init, urkab, line_follower, PID_control):
             return current_abs_dir
 
 if __name__ == '__main__':
+    if DEBUG:
+        logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.DEBUG)
+    else:
+        logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.INFO)
     try:
         size, start, end, dir_init, urkab, line_follower, PID_control = initialize()
         logging.info("Starting to goooooo...")
