@@ -219,7 +219,8 @@ if __name__ == '__main__':
         motor_controller.executeDirection(final_step)
         if final_step != "" :
             #move forward a certain amount
-
+            motor_controller.carAdvance
+            time.sleep(0.2)
         # Release resources and stop the car
         cv2.destroyAllWindows()
         motor_controller.carStop()
