@@ -87,7 +87,7 @@ def initialize():
 
     return size, start, end, dir_init, urkab, line_follower, PID_control
 
-def go_somewhere(size, start, end, dir_init, urkab, line_follower, PID_control):
+def go_somewhere(size, start, end, dir_init, urkab, line_follower, PID_control, g=None):
     logging.debug(f"Called go_somewhere with size {size}, start {start}, end {end}, dir_init {dir_init}")
     previous_time = time.perf_counter()
     delta_time = 0.1
@@ -100,7 +100,7 @@ def go_somewhere(size, start, end, dir_init, urkab, line_follower, PID_control):
     sleep(0.1)  # Allow the camera to warm up
 
     # Initialize the itinerary
-    g = grid_to_adjacency_matrix(size)
+    if g == None: g = grid_to_adjacency_matrix(size)
     itin = bfs_with_edges_from_matrix(g, start, end, size)
     absolute_path = dir_list_absolute(itin)
     dir_l = dir_list(absolute_path, dir_init)
@@ -194,7 +194,10 @@ def go_somewhere(size, start, end, dir_init, urkab, line_follower, PID_control):
         print("After camera close")
         skip_cleanup = True
         print(f"Calling with size {size}, was_going_to_intersection {was_going_to_intersection}, last_taken_intersection {last_taken_intersection}, facing_direction {facing_direction}")
-        return go_somewhere(size, was_going_to_intersection, last_taken_intersection, facing_direction, urkab, line_follower, PID_control)
+        facing = go_somewhere(size, was_going_to_intersection, last_taken_intersection, facing_direction, urkab, line_follower, PID_control)
+        remove_edge(g, was_going_to_intersection, last_taken_intersection)
+        print(f"Removed edge from {was_going_to_intersection} to {last_taken_intersection}")
+        return go_somewhere(size, last_taken_intersection, end, facing, urkab, line_follower, PID_control, g)
 
     finally:
         if not skip_cleanup:
