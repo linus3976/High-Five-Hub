@@ -182,7 +182,7 @@ def go_somewhere(size, start, end, dir_init, urkab, line_follower, PID_control):
             raw_capture.truncate(0)
 
     finally:
-        current_dir =
+        current_dir = None #TO DO
 
 
 
