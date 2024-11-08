@@ -2,6 +2,20 @@ import serial
 import time
 import struct
 import logging
+import os
+
+from dotenv import load_dotenv
+
+try:
+    env_file_path = "./turning_const.env"
+    load_dotenv(env_file_path)
+
+    # Access the variable
+    TURNING_CONST = float(os.getenv("TIME_TO_TURN"))
+    logging.debug(f"The value of TIME_TO_TURN is: {TURNING_CONST}")
+except ValueError:
+    TURNING_CONST = 2.8
+    logging.debug(f"Value Error; using TURNING_CONST: {TURNING_CONST}")
 
 class Urkab():
 
@@ -139,9 +153,10 @@ class Urkab():
         self.arduino.write(b'I1')
         self.AttAcquit()
 
+
     def executeDirection(self, command):
         """Map direction commands to motor actions, checking for obstacles on the opposite side before turning."""
-        logging.info(f"Executing direction: {command}")
+        logging.info(f"Executing direction: {command}; angle: {angle}")
 
         # Check for obstacles on the opposite side before executing a turn
         if command == "left":
@@ -151,18 +166,24 @@ class Urkab():
             if self.checkObstacle(0):  # Check left side (180 degrees) before turning right
                 raise self.ObstacleOnWayException("Obstacle detected on the right; cannot turn right.")
 
-        # Proceed with command if no obstacle is detected on the opposite side
+        # Proceed with command if no obstacle is detected on the opposite side       
+        if angle is None:
+            angle = 90      #standard turning angle
+            
         if command == "straight":
             self.carAdvance(250, 250)  # Move forward
         elif command == "left":
             self.carTurnLeft(250, 250)  # Turn left
-            time.sleep(0.7)
+            waiting_time = TURNING_CONST * (angle/360)
+            time.sleep(waiting_time)
         elif command == "right":
             self.carTurnRight(250, 250)  # Turn right
-            time.sleep(0.7)
+            waiting_time = TURNING_CONST * (angle/360)
+            time.sleep(waiting_time)
         elif command == "do_a_flip":
             self.carTurnRight(250, 250)
-            time.sleep(1.2)
+            waiting_time = TURNING_CONST * (180/360)
+            time.sleep(waiting_time)
         else:
             self.carStop()  # Stop if no command
 

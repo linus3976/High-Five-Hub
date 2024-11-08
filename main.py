@@ -16,6 +16,7 @@ DEBUG = False
 USE_ARGS = False
 DEACT_EMERGENCY_STOP = False
 
+
 # Define the motor control function
 def motor_control(command):
     """Map LineFollower commands to motor actions."""
