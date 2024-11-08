@@ -186,9 +186,9 @@ def go_somewhere(size, start, end, dir_init, urkab, line_follower, PID_control):
         print("After turning around")
         #go back to intersection
         last_taken_intersection = itin[direction_index-1]
-        logging.debug(f"Last taken intersection: {last_taken_intersection}")
+        print(f"Last taken intersection: {last_taken_intersection}")
         was_going_to_intersection = itin[direction_index]
-        logging.debug(f"Was going to intersection: {was_going_to_intersection}")
+        print(f"Was going to intersection: {was_going_to_intersection}")
         facing_direction = (was_going_to_intersection[0] - last_taken_intersection[0], was_going_to_intersection[1] - last_taken_intersection[1])
         print("Before camera close")
         camera.close()
