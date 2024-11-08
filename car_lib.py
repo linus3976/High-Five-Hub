@@ -14,8 +14,9 @@ try:
     ENV_VAL = os.getenv("TIME_TO_TURN")
     TURNING_CONST = float(ENV_VAL)
     logging.debug(f"The value of TIME_TO_TURN is: {TURNING_CONST}")
-except ValueError:
+except:
     TURNING_CONST = 2.8
+    print("Using 2.8")
     logging.debug(f"Value Error; using TURNING_CONST: {TURNING_CONST}")
 
 class Urkab():
