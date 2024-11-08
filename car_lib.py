@@ -134,11 +134,11 @@ class Urkab():
 
         # Check for obstacles on the opposite side before executing a turn
         if command == "left":
-            if self.checkObstacle(0):  # Check right side (0 degrees) before turning left
+            if self.checkObstacle(180):  # Check right side (0 degrees) before turning left
                 logging.error("Obstacle detected on the right; cannot turn left.")
                 return "Error: Obstacle detected on the right"
         elif command == "right":
-            if self.checkObstacle(180):  # Check left side (180 degrees) before turning right
+            if self.checkObstacle(0):  # Check left side (180 degrees) before turning right
                 logging.error("Obstacle detected on the left; cannot turn right.")
                 return "Error: Obstacle detected on the left"
 
