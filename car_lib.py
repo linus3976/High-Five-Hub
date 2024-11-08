@@ -154,7 +154,7 @@ class Urkab():
         self.AttAcquit()
 
 
-    def executeDirection(self, command):
+    def executeDirection(self, command, angle=90):
         """Map direction commands to motor actions, checking for obstacles on the opposite side before turning."""
         logging.info(f"Executing direction: {command}; angle: {angle}")
 
@@ -165,10 +165,6 @@ class Urkab():
         elif command == "right":
             if self.checkObstacle(0):  # Check left side (180 degrees) before turning right
                 raise self.ObstacleOnWayException("Obstacle detected on the right; cannot turn right.")
-
-        # Proceed with command if no obstacle is detected on the opposite side       
-        if angle is None:
-            angle = 90      #standard turning angle
             
         if command == "straight":
             self.carAdvance(250, 250)  # Move forward
