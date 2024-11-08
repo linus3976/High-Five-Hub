@@ -26,42 +26,37 @@ def motor_control(command):
     else:
         motor_controller.carStop()  # Stop if no command
 
-def parse_arguments():
-    """Parse command-line arguments for grid parameters."""
-    parser = argparse.ArgumentParser(description="Car navigation parameters")
-    parser.add_argument("--size", type=int, required=True, help="Size of the grid (N)")
-    parser.add_argument("--start", type=float, nargs=2, required=True, help="Starting coordinates as two integers")
-    parser.add_argument("--end", type=float, nargs=2, required=True, help="Ending coordinates as two integers")
-    parser.add_argument("--dir_init", type=int, nargs=2, required=True, help="Initial direction as a tuple of two integers")
-
-    args = parser.parse_args()
-    return args.size, tuple(args.start), tuple(args.end), tuple(args.dir_init)
-
-if __name__ == '__main__':
-    if DEBUG:
-        logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.DEBUG)
-    else:
-        logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.INFO)
-    # Parse arguments from the terminal
-    size, start_float, end_float, dir_init = parse_arguments()
-    start, end = int(start_float), int(end_float)
-
-    # Initialize motor controller and line follower with motor control function
-    motor_controller = Urkab()
-    motor_controller.carDeactivateEmergencyStop()
-    line_follower = LineFollower(motor_control=motor_control)
-    PID_control = PIDController(3, 0.4, 1.2, 255, 0)  # values: kp, ki, kd, base_speed, setpoint
-
-    previous_time = time.perf_counter()
-    delta_time = 0.1
-
-    # Initialize the PiCamera
-    camera = PiCamera()
-    camera.resolution = (160, 128)
-    camera.framerate = 32
-    raw_capture = PiRGBArray(camera, size=camera.resolution)
-    sleep(0.1)  # Allow the camera to warm up
+#getting th initial input
+def get_user_input():
+    """Prompt the user for grid parameters."""
+    size = int(input("Enter the size of the grid (N): "))
     
+    start_x = float(input("Enter the starting X coordinate: "))
+    start_y = float(input("Enter the starting Y coordinate: "))
+    start = (start_x, start_y)
+    
+    end_x = float(input("Enter the ending X coordinate: "))
+    end_y = float(input("Enter the ending Y coordinate: "))
+    end = (end_x, end_y)
+    
+    dir_init_x = int(input("Enter the initial direction X component: "))
+    dir_init_y = int(input("Enter the initial direction Y component: "))
+    dir_init = (dir_init_x, dir_init_y)
+    
+    return size, start, end, dir_init
+
+#getting the input if the user wants to ga again
+def prompt_user_again():
+    if bool(input("Do you want to go somewhere else? [True/False]")):
+        end_x = float(input("Enter the ending X coordinates: "))
+        end_y = float(input("Enter the ending Y coordinates: "))
+        end = end_x, end_y
+        return True, end
+    else:
+        return False, (0.0,0.0)
+        
+#main function of the program that makes the car zoom across the grid
+def go_to(size, start_float, end_float, dir_init):
     #correcting start
     if (start_float[0] - start[0] > 0.1) or (star_float[1] - start[1] > 0.1):
         start = (int(start_float[0] + dir_init[0]),int(start_float[1] + dir_init[1]))
@@ -81,6 +76,8 @@ if __name__ == '__main__':
     else:
         dir_l = dir_list(l, dir_init)
         final_step = ""
+#I HOPE I'M NOT FUCKING THIS UP
+        final_dir = ((l[-1][0] - l[-2][0]),(l[-1][1] , l[-2][1]))
     logging.info(f"Initial itinerary: {dir_l}")
 
     # Initialize intersection tracking
@@ -221,8 +218,76 @@ if __name__ == '__main__':
             #move forward a certain amount
             motor_controller.carAdvance
             time.sleep(0.2)
-        # Release resources and stop the car
-        cv2.destroyAllWindows()
         motor_controller.carStop()
-        motor_controller.carDisconnect()
+        return final_dir
 
+#MAIN
+if __name__ == '__main__':
+    if DEBUG:
+        logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.DEBUG)
+    else:
+        logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.INFO)
+    # Parse arguments from the terminal
+    size, start_float, end_float, dir_init = get_user_input()
+    start, end = (int(start_float[0]), int(start_float[1])), (int(end_float[0]), int(end_float[1]))
+
+    # Initialize motor controller and line follower with motor control function
+    motor_controller = Urkab()
+    motor_controller.carDeactivateEmergencyStop()
+    line_follower = LineFollower(motor_control=motor_control)
+    PID_control = PIDController(3, 0.4, 1.2, 255, 0)  # values: kp, ki, kd, base_speed, setpoint
+
+    previous_time = time.perf_counter()
+    delta_time = 0.1
+
+    # Initialize the PiCamera
+    camera = PiCamera()
+    camera.resolution = (160, 128)
+    camera.framerate = 32
+    raw_capture = PiRGBArray(camera, size=camera.resolution)
+    sleep(0.1)  # Allow the camera to warm up
+    
+    again = True
+    while again:
+        dir_init = go_to(size, start_float, end_float, dir_init)
+        start_float = (end_float[0], end_float[1])
+        again, end_float = prompt_user_again()
+    cv2.destroyAllWindows()
+    motor_controller.carDisconnect()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#def parse_arguments():
+#    """Parse command-line arguments for grid parameters."""
+#    parser = argparse.ArgumentParser(description="Car navigation parameters")
+#    parser.add_argument("--size", type=int, required=True, help="Size of the grid (N)")
+#    parser.add_argument("--start", type=float, nargs=2, required=True, help="Starting coordinates as two integers")
+#    parser.add_argument("--end", type=float, nargs=2, required=True, help="Ending coordinates as two integers")
+#    parser.add_argument("--dir_init", type=int, nargs=2, required=True, help="Initial direction as a tuple of two integers")
+#
+#    args = parser.parse_args()
+#    return args.size, tuple(args.start), tuple(args.end), tuple(args.dir_init)
