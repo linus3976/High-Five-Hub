@@ -194,9 +194,12 @@ def go_somewhere(size, start, end, dir_init, urkab, line_follower, PID_control, 
         print("After camera close")
         skip_cleanup = True
         print(f"Calling with size {size}, was_going_to_intersection {was_going_to_intersection}, last_taken_intersection {last_taken_intersection}, facing_direction {facing_direction}")
+        urkab.carResetEmergencyStop()
         facing = go_somewhere(size, was_going_to_intersection, last_taken_intersection, facing_direction, urkab, line_follower, PID_control)
+        urkab.carResetEmergencyStop()
         remove_edge(g, was_going_to_intersection, last_taken_intersection)
         print(f"Removed edge from {was_going_to_intersection} to {last_taken_intersection}")
+        print("Amen brothers")
         return go_somewhere(size, last_taken_intersection, end, facing, urkab, line_follower, PID_control, g)
 
     finally:
