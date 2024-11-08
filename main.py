@@ -184,7 +184,6 @@ def go_somewhere(size, start, end, dir_init, urkab, line_follower, PID_control):
 
     finally:
         camera.close()
-        camera.release()
         current_abs_dir = absolute_path[direction_index-1]
         logging.info(f"Current absolute direction after finishing go_somewhere: {current_abs_dir}")
         return current_abs_dir
