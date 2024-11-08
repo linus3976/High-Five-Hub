@@ -1,9 +1,12 @@
 from car_lib import *
 import cv2
+import os
 from picamera import PiCamera
 from picamera.array import PiRGBArray
 from croisement import detect_intersections
 from time import perf_counter, sleep
+
+
 
 def initilize():
     global camera, raw_capture, urkab
@@ -16,6 +19,7 @@ def initilize():
 
     urkab = Urkab()
     urkab.carResetEmergencyStop()
+
 
 def calibrate_turning():
     global camera, raw_capture, urkab
@@ -62,7 +66,7 @@ def main():
         print("HighFive Calibration system: Place Urkab in front of an intersection")
         input("Press enter to start calibration")
         initilize()
-        time_to_turn = calibrate_turning()
+        time_to_turn = int(calibrate_turning())
         print(f"Time to turn: {time_to_turn}")
     except KeyboardInterrupt:
         urkab.carStop()
@@ -72,6 +76,8 @@ def main():
     finally:
         # Release resources and stop the car
         try:
+            time_to_turn = time.time() * (360/380)
+            os.environ["turning_const"] = str(time_to_turn) #save variable as environment variable
             cv2.destroyAllWindows()
             urkab.carStop()
             urkab.carDisconnect()

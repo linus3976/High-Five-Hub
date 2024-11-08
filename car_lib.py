@@ -2,6 +2,9 @@ import serial
 import time
 import struct
 import logging
+import os
+
+TURNING_CONST = int(os.environ.get('turning_const', 'Not Set'))
 
 class Urkab():
 
@@ -128,20 +131,27 @@ class Urkab():
         self.arduino.write(b'I1')
         self.AttAcquit()
 
-    def executeDirection(self, command):
+    def executeDirection(self, command, angle = None):
         """Map direction commands to motor actions."""
-        logging.info(f"Executing direction: {command}")
+        logging.info(f"Executing direction: {command}; angle: {angle}")
+
+        if angle is None:
+            angle = 90      #standard turning angle
+
         if command == "straight":
             self.carAdvance(250, 250)  # Move forward
         elif command == "left":
             self.carTurnLeft(250, 250)  # Turn left
-            time.sleep(0.7)
+            waiting_time = TURNING_CONST * (angle/360)
+            time.sleep(waiting_time)
         elif command == "right":
             self.carTurnRight(250, 250)  # Turn right
-            time.sleep(0.7)
+            waiting_time = TURNING_CONST * (angle/360)
+            time.sleep(waiting_time)
         elif command == "do_a_flip":
             self.carTurnRight(250, 250)
-            time.sleep(1.2)
+            waiting_time = TURNING_CONST * (180/360)
+            time.sleep(waiting_time)
         else:
             self.carStop()  # Stop if no command
 
