@@ -1,3 +1,5 @@
+import logging
+
 from car_lib import *
 import cv2
 import os
@@ -77,8 +79,16 @@ def main():
     finally:
         # Release resources and stop the car
         try:
-            time_to_turn = time.time() * (360/380)
-            os.environ["turning_const"] = str(time_to_turn) #save variable as environment variable
+            time_to_turn = time_to_turn * (360/380)
+
+            variable_name = "TIME_TO_TURN"
+            variable_value = str(time_to_turn)
+            env_file_path = "./turning_const.env"
+            with open(env_file_path, "a") as env_file:
+                env_file.write(f"{variable_name}={variable_value}\n")
+
+            logging.debug(f"Added {variable_name} to {env_file_path}.")
+
             cv2.destroyAllWindows()
             urkab.carStop()
             urkab.carDisconnect()

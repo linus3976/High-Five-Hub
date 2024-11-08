@@ -4,10 +4,18 @@ import struct
 import logging
 import os
 
+from dotenv import load_dotenv
+
 try:
-    TURNING_CONST = float(os.environ.get('turning_const', 'Not Set'))
+    env_file_path = "./turning_const.env"
+    load_dotenv(env_file_path)
+
+    # Access the variable
+    TURNING_CONST = os.getenv("TIME_TO_TURN")
+    logging.debug(f"The value of TIME_TO_TURN is: {TURNING_CONST}")
 except ValueError:
     TURNING_CONST = 2.8
+    logging.debug(f"Value Error; using TURNING_CONST: {TURNING_CONST}")
 
 class Urkab():
 
