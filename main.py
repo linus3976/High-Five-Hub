@@ -120,7 +120,7 @@ def go_somewhere(size, start, end, dir_init, urkab, line_follower, PID_control):
     logging.debug(f"Starting initial positioning, direction is: {dir_l[direction_index]}")
     urkab.executeDirection(dir_l[direction_index])
     logging.debug(f"Should have oriented now... Amen.")
-
+    skip_cleanup = False
     try:
 
         # Capture frames continuously from the camera
@@ -183,12 +183,25 @@ def go_somewhere(size, start, end, dir_init, urkab, line_follower, PID_control):
 
             # Clear the stream for the next frame
             raw_capture.truncate(0)
+    except Urkab.ObstacleException:
+        logging.info("Turning around because of obstacle...")
+        urkab.executeDirection("do_a_flip")
+        #go back to intersection
+        last_taken_intersection = itin[direction_index-1]
+        logging.debug(f"Last taken intersection: {last_taken_intersection}")
+        was_going_to_intersection = itin[direction_index]
+        logging.debug(f"Was going to intersection: {was_going_to_intersection}")
+        facing_direction = (was_going_to_intersection[0] - last_taken_intersection[0], was_going_to_intersection[1] - last_taken_intersection[1])
+        camera.close()
+        skip_cleanup = True
+        return go_somewhere(size, was_going_to_intersection, last_taken_intersection, facing_direction, urkab, line_follower, PID_control)
 
     finally:
-        camera.close()
-        current_abs_dir = absolute_path[direction_index-1]
-        logging.info(f"Arrived! Current absolute direction after finishing go_somewhere: {current_abs_dir}")
-        return current_abs_dir
+        if not skip_cleanup:
+            camera.close()
+            current_abs_dir = absolute_path[direction_index-1]
+            logging.info(f"Arrived! Current absolute direction after finishing go_somewhere: {current_abs_dir}")
+            return current_abs_dir
 
 if __name__ == '__main__':
     try:

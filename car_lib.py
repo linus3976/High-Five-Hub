@@ -100,7 +100,7 @@ class Urkab():
 
         if rep.startswith(b"OB"):  # Check for obstacle-related messages
             error_message = rep.decode().strip()  # Decode the response and strip whitespace
-            raise ObstacleException(f"Obstacle detected: {error_message}")
+            raise self.ObstacleException(f"Obstacle detected: {error_message}")
 
         if not intresp:
             decoded = rep.decode()
