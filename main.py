@@ -180,6 +180,7 @@ def go_somewhere(size, start, end, dir_init, urkab, line_follower, PID_control):
             # Clear the stream for the next frame
             raw_capture.truncate(0)
     except Urkab.ObstacleException:
+        print("Caught Exception")
         logging.info("Turning around because of obstacle...")
         urkab.executeDirection("do_a_flip")
         #go back to intersection

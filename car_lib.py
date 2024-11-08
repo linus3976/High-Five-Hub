@@ -21,6 +21,7 @@ class Urkab():
 
     class ObstacleException(Exception):
         logging.warning("Obstacle detected!")
+        print("Obstacle detected!, in Exception")
 
     class ObstacleOnWayException(Exception):
         logging.warning("Obstacle detected on the way I'm going!")
