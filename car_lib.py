@@ -158,6 +158,7 @@ class Urkab():
     def executeDirection(self, command, angle=90):
         """Map direction commands to motor actions, checking for obstacles on the opposite side before turning."""
         logging.info(f"Executing direction: {command}; angle: {angle}")
+        print(f"Executing direction: {command}; angle: {angle}")
 
         # Check for obstacles on the opposite side before executing a turn
         if command == "left":
