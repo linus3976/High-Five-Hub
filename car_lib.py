@@ -185,6 +185,7 @@ class Urkab():
             print(f"Turning constant is: {TURNING_CONST}")
             waiting_time = TURNING_CONST * (180/360)
             time.sleep(waiting_time)
+            self.carStop()
         else:
             self.carStop()  # Stop if no command
         self.carResetEmergencyStop()
