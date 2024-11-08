@@ -66,7 +66,7 @@ def main():
         print("HighFive Calibration system: Place Urkab in front of an intersection")
         input("Press enter to start calibration")
         initilize()
-        time_to_turn = int(calibrate_turning())
+        time_to_turn = float(calibrate_turning())
         print(f"Time to turn: {time_to_turn}")
     except KeyboardInterrupt:
         urkab.carStop()

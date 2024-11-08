@@ -4,7 +4,10 @@ import struct
 import logging
 import os
 
-TURNING_CONST = int(os.environ.get('turning_const', 'Not Set'))
+try:
+    TURNING_CONST = float(os.environ.get('turning_const', 'Not Set'))
+except ValueError:
+    TURNING_CONST = 2.8
 
 class Urkab():
 
