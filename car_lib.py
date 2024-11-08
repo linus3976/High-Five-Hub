@@ -168,10 +168,11 @@ class Urkab():
 
     def checkObstacle(self, angle):
         """Move ultrasonic to the specified angle and check for obstacles within range."""
-        self.moveUltrasonic(angle)
-        time.sleep(0.1)  # Small delay to allow ultrasonic to position
-        distance = self.getUltrasonicDistance()  # Assume this function returns distance reading
-        return distance < 110  # Return True if obstacle is within 110 units
+        # self.moveUltrasonic(angle)
+        # time.sleep(0.1)  # Small delay to allow ultrasonic to position
+        # distance = self.getUltrasonicDistance()  # Assume this function returns distance reading
+        # return distance < 110  # Return True if obstacle is within 110 units
+        return False
 
     def getUltrasonicDist(self):
         self.arduino.write(b's')
