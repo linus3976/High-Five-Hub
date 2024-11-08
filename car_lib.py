@@ -167,7 +167,8 @@ class Urkab():
         elif command == "right":
             if self.checkObstacle(0):  # Check left side (180 degrees) before turning right
                 raise self.ObstacleOnWayException("Obstacle detected on the right; cannot turn right.")
-            
+
+        self.carDeactivateEmergencyStop()  # Deactivate emergency stop before moving
         if command == "straight":
             self.carAdvance(250, 250)  # Move forward
         elif command == "left":
@@ -186,6 +187,7 @@ class Urkab():
             time.sleep(waiting_time)
         else:
             self.carStop()  # Stop if no command
+        self.carResetEmergencyStop()
 
     def checkObstacle(self, angle):
         """Move ultrasonic to the specified angle and check for obstacles within range."""
