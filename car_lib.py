@@ -181,6 +181,7 @@ class Urkab():
         elif command == "do_a_flip":
             print("I'm doing a flip")
             self.carTurnRight(250, 250)
+            print(f"Turning constant is: {TURNING_CONST}")
             waiting_time = TURNING_CONST * (180/360)
             time.sleep(waiting_time)
         else:
