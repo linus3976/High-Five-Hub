@@ -62,6 +62,7 @@ def calibrate_turning():
     return end_time - start_time
 
 def main():
+    global camera, raw_capture, urkab
     try:
         print("HighFive Calibration system: Place Urkab in front of an intersection")
         input("Press enter to start calibration")
