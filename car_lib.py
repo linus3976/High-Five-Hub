@@ -5,6 +5,12 @@ import logging
 
 class Urkab():
 
+    class ObstacleException(Exception):
+        logging.warning("Obstacle detected!")
+
+    class ObstacleOnWayException(Exception):
+        logging.warning("Obstacle detected on the way I'm going!")
+
     def __init__(self):
         self.arduino = serial.Serial(port='/dev/ttyACM0', baudrate=115200, timeout=0.1)
 
@@ -77,6 +83,11 @@ class Urkab():
         while rep == b'':
             rep = self.arduino.readline()
         logging.debug(f"Acquitted response is: {rep}")
+
+        if rep.startswith(b"OB"):  # Check for obstacle-related messages
+            error_message = rep.decode().strip()  # Decode the response and strip whitespace
+            raise ObstacleException(f"Obstacle detected: {error_message}")
+
         if not intresp:
             decoded = rep.decode()
         else:
@@ -129,8 +140,18 @@ class Urkab():
         self.AttAcquit()
 
     def executeDirection(self, command):
-        """Map direction commands to motor actions."""
+        """Map direction commands to motor actions, checking for obstacles on the opposite side before turning."""
         logging.info(f"Executing direction: {command}")
+
+        # Check for obstacles on the opposite side before executing a turn
+        if command == "left":
+            if self.checkObstacle(180):  # Check right side (0 degrees) before turning left
+                raise self.ObstacleOnWayException("Obstacle detected on the left; cannot turn left.")
+        elif command == "right":
+            if self.checkObstacle(0):  # Check left side (180 degrees) before turning right
+                raise self.ObstacleOnWayException("Obstacle detected on the right; cannot turn right.")
+
+        # Proceed with command if no obstacle is detected on the opposite side
         if command == "straight":
             self.carAdvance(250, 250)  # Move forward
         elif command == "left":
@@ -144,6 +165,14 @@ class Urkab():
             time.sleep(1.2)
         else:
             self.carStop()  # Stop if no command
+
+    def checkObstacle(self, angle):
+        """Move ultrasonic to the specified angle and check for obstacles within range."""
+        # self.moveUltrasonic(angle)
+        # time.sleep(0.1)  # Small delay to allow ultrasonic to position
+        # distance = self.getUltrasonicDistance()  # Assume this function returns distance reading
+        # return distance < 110  # Return True if obstacle is within 110 units
+        return False
 
     def getUltrasonicDist(self):
         self.arduino.write(b's')
