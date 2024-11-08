@@ -179,6 +179,7 @@ class Urkab():
             waiting_time = TURNING_CONST * (angle/360)
             time.sleep(waiting_time)
         elif command == "do_a_flip":
+            print("I'm doing a flip")
             self.carTurnRight(250, 250)
             waiting_time = TURNING_CONST * (180/360)
             time.sleep(waiting_time)
