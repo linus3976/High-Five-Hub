@@ -12,7 +12,7 @@ from picamera.array import PiRGBArray
 from PID import PIDController
 from time import sleep
 
-DEBUG = False
+DEBUG = True
 USE_ARGS = False
 DEACT_EMERGENCY_STOP = False
 
@@ -132,9 +132,9 @@ def go_somewhere(size, start, end, dir_init, urkab, line_follower, PID_control):
             # Check for intersection
             if intersection_detected:
                 if not previous_intersection: logging.info("Intersection detected!")
-                if DEBUG:
-                    urkab.carStop()
-                    sleep(0.5)  # Pause for 1 second
+                #if DEBUG:
+                #    urkab.carStop()
+                #    sleep(0.5)
                 frames_without_intersection = 0  # Reset the no-intersection counter
                 previous_intersection = True
             if (not intersection_detected) and previous_intersection:
