@@ -116,6 +116,9 @@ def go_somewhere(size, start, end, dir_init, urkab, line_follower, PID_control):
     frames_without_intersection = 0  # Counter for consecutive frames without intersection
     direction_index = 0
 
+    # Initialize lost line threshold
+    frames_without_line = 0
+
     # Set the initial direction
     logging.debug(f"Starting initial positioning, direction is: {dir_l[direction_index]}")
     urkab.executeDirection(dir_l[direction_index])
@@ -127,6 +130,14 @@ def go_somewhere(size, start, end, dir_init, urkab, line_follower, PID_control):
         for frame in camera.capture_continuous(raw_capture, format="bgr", use_video_port=True):
             logging.debug("----------Processing frame...----------")
             image = frame.array  # Get the current frame as an array
+
+            # Check if the line is lost
+            if line_follower.is_line_lost(image):
+                logging.info("White line lost! Incrementing counter.")
+                frames_without_line += 1
+                if frames_without_line >= 3:
+                    urkab.carStop()  # Stop the robot if the line is lost
+                    break  # Exit the loop and stop the robot
 
             intersection_detected = detect_intersections(image)
             # Check for intersection

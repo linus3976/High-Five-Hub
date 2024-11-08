@@ -89,4 +89,22 @@ class LineFollower:
         else :
             urkab.carAdvance(motor_right, motor_left)
             logging.debug(f"Applying motor values: Right: {motor_right}, Left: {motor_left}")
-            
+
+    # New function to detect if the line is lost
+    def is_line_lost(self, image, threshold=25):
+        """Check if the white line is visible in the center region of the image."""
+        gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)  # Convert to grayscale
+        _, binary_image = cv2.threshold(gray_image, 200, 255, cv2.THRESH_BINARY)  # Threshold to get white pixels
+
+        height, width = binary_image.shape
+        center_region = binary_image[height // 3:2 * height // 3,
+                        width // 3:2 * width // 3]  # Extract the center portion of the image
+
+        # Count white pixels in the center region
+        white_pixel_count = cv2.countNonZero(center_region)
+
+        # If the white pixel count is below a threshold, assume the line is lost
+        if white_pixel_count < threshold:
+            return True  # Line is lost
+        else:
+            return False  # Line is still visible
